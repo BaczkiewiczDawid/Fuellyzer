@@ -1,7 +1,11 @@
 import {StyleSheet, Text, View, Image} from "react-native";
 import ArrowIcon from "../../assets/images/arrow.png";
 
-export const MonthlySummary = () => {
+type Props = {
+    type: string
+}
+
+export const Summary = ({type}: Props) => {
     return (
         <View style={styles.monthlyContainer}>
             <Image style={styles.icon} source={ArrowIcon} alt="Arrow icon"/>

@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const HistoryItem = ({item}: Props) => {
-    const day = new Date(item.date).getDate();
+    const day = String(new Date(item.date).getDate()).padStart(2, '0');
     const month = new Date(item.date).toLocaleString('en-US', {month: 'short'});
 
     return (
@@ -22,8 +22,8 @@ export const HistoryItem = ({item}: Props) => {
                     <Text style={styles.dateSecondary}>{month}</Text>
                 </View>
                 <View>
-                    <Text>{item.type}</Text>
-                    <Text>{item.details}</Text>
+                    <Text style={styles.detailsText}>{item.type}</Text>
+                    <Text style={styles.detailsTextSecondary}>{item.details}</Text>
                 </View>
             </View>
             <Text style={styles.total}>{item.total}</Text>
@@ -50,17 +50,29 @@ const styles = StyleSheet.create({
         columnGap: 25,
         textAlign: 'center',
         alignItems: 'center',
+        color: "#101D1E"
     },
     datePrimary: {
         fontSize: 24,
         fontWeight: "bold",
+        color: "#101D1E"
     },
     dateSecondary: {
-        color: "#7B7B7B",
-        fontWeight: "light"
+        fontWeight: "light",
+        color: "#101D1E"
     },
     total: {
         fontSize: 18,
         fontWeight: "bold",
+        color: "#101D1E"
+    },
+    detailsText: {
+        color: "#101D1E",
+        fontSize: 16,
+    },
+    detailsTextSecondary: {
+        color: "#AAAAAA",
+        fontSize: 12,
+        marginTop: 2
     }
 })

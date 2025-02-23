@@ -6,6 +6,7 @@ import carImage from '../../assets/images/car.png';
 import {Summary} from "@/components/header/summary";
 import {HeaderNavigation} from "@/components/header/header-navigation";
 import {useState} from "react";
+import {HistoryView} from "@/components/history/history-view";
 
 const {width} = Dimensions.get("window");
 
@@ -49,6 +50,7 @@ export default function HomeScreen() {
                 disableIntervalMomentum={true}
             />
             <HeaderNavigation activeHeader={activeHeader} setActiveHeader={setActiveHeader}/>
+            <HistoryView />
         </Wrapper>
     );
 }

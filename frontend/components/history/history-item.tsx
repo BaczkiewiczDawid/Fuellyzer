@@ -1,13 +1,20 @@
 import {Text, View, StyleSheet} from "react-native";
 
+type HistoryItem = {
+    id: string
+    type: string
+    date: string
+    email: string
+    details: string
+    currency: string
+    carBrand: string
+    carName: string
+    createdAt: string
+    total: number
+}
+
 type Props = {
-    item: {
-        date: string,
-        type: string,
-        details: string,
-        total: number,
-        currency: string,
-    }
+    item: HistoryItem
 }
 
 export const HistoryItem = ({item}: Props) => {

@@ -17,7 +17,7 @@ export const HistoryItems = ({activeView}: Props) => {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true)
-            const response = await useApi("http://localhost:5000/history", "GET");
+            const response = await useApi("http://localhost:4000/history", "GET");
 
             setData(response)
             setIsLoading(false)

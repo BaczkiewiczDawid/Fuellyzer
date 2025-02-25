@@ -7,6 +7,7 @@ import {Summary} from "@/components/header/summary";
 import {HeaderNavigation} from "@/components/header/header-navigation";
 import {useState} from "react";
 import {HistoryView} from "@/components/history/history-view";
+import {SelectedCar} from "@/components/header/selected-car";
 
 const {width} = Dimensions.get("window");
 
@@ -23,10 +24,7 @@ export default function HomeScreen() {
     return (
         <Wrapper>
             <View style={styles.headerWrapper}>
-                <View style={styles.infoContainer}>
-                    <Title>Volkswagen Golf VII</Title>
-                    <Description>147 635km</Description>
-                </View>
+                <SelectedCar />
                 <View style={styles.imageContainer}>
                     <Image style={styles.image} source={carImage}/>
                 </View>
@@ -61,9 +59,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingRight: 30,
-    },
-    infoContainer: {
-        width: "60%",
     },
     imageContainer: {
         flex: 1,

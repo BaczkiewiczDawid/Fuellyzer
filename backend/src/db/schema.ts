@@ -1,4 +1,4 @@
-import {date, doublePrecision, pgTable, serial, text, timestamp} from "drizzle-orm/pg-core";
+import {boolean, date, doublePrecision, integer, pgTable, serial, text, timestamp} from "drizzle-orm/pg-core";
 
 export const costsData = pgTable("costsData", {
     id: serial("id").primaryKey(),
@@ -11,4 +11,15 @@ export const costsData = pgTable("costsData", {
     email: text("email").notNull(),
     carBrand: text("carBrand").notNull(),
     carName: text("carName").notNull(),
+})
+
+export const userCarsList = pgTable("userCarsList", {
+    id: serial("id").primaryKey(),
+    createdAt: timestamp("created_at").default(new Date()),
+    email: text("email").notNull(),
+    carBrand: text("carBrand").notNull(),
+    carName: text("carName").notNull(),
+    mileage: integer("mileage").notNull(),
+    defaultSelected: boolean("defaultSelected").notNull(),
+    mileageMeasure: text("mileageMeasure").notNull(),
 })

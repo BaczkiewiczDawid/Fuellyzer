@@ -1,13 +1,12 @@
-import {View, Text, Pressable, StyleSheet} from "react-native";
+import {Pressable, StyleSheet, Text, View} from "react-native";
 
 type Props = {
-    activeView: "All" | "Refuel" | "Maintance",
-    setActiveView: (index: "All" | "Refuel" | "Maintance") => void,
+    activeView: string,
+    setActiveView: (index: string) => void,
+    views: string[]
 }
 
-export const HistoryNavigation = ({activeView, setActiveView}: Props) => {
-    const views = ["All", "Refuel", "Maintance"];
-
+export const Navigation = ({activeView, setActiveView, views}: Props) => {
     return (
         <View style={styles.itemsContainer}>
             {views.map((view, index) => {
@@ -15,19 +14,7 @@ export const HistoryNavigation = ({activeView, setActiveView}: Props) => {
                     <Pressable
                         key={index}
                         style={[styles.button, activeView === view && styles.activeButton]}
-                        onPress={() => {
-                            switch (view) {
-                                case "All":
-                                    setActiveView("All");
-                                    break;
-                                case "Refuel":
-                                    setActiveView("Refuel");
-                                    break;
-                                case "Maintance":
-                                    setActiveView("Maintance");
-                                    break;
-                            }
-                        }}
+                        onPress={() => setActiveView(view)}
                     >
                         <Text style={[styles.buttonText, activeView === view && styles.activeButtonText]}>{view}</Text>
                     </Pressable>

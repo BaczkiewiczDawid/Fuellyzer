@@ -4,13 +4,18 @@ type Props = {
     title: string,
     placeholder: string
     type: "string" | "number" | "email" | "password"
+    value: string | number | undefined
+    setValue: (val: any) => void
+    error: boolean,
 }
 
-export const FormLabel = ({title, placeholder, type}: Props) => {
+export const FormLabel = ({title, placeholder, type, value, setValue, error}: Props) => {
     return (
         <View>
             <label><Text style={styles.label}>{title}</Text></label>
-            <input placeholder={placeholder} style={styles.input} type={type}/>
+            <input placeholder={placeholder} style={styles.input} type={type} value={value}
+                   onChange={(event) => setValue(event.target.value)}/>
+            {error && !value && <Text style={styles.error}>This field is required</Text>}
         </View>
     )
 }
@@ -29,5 +34,9 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#D9D9D9",
         fontWeight: "light",
+    },
+    error: {
+        color: "#FF3D3D",
+        marginTop: 5,
     }
 })

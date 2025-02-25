@@ -4,6 +4,7 @@ import {Description} from "@/components/description";
 import {useUserStore} from "@/context/user";
 import {useEffect} from "react";
 import {useApi} from "@/hooks/useApi";
+import {Skeleton} from "@/components/skeleton";
 
 export const SelectedCar = () => {
     const carBrand = useUserStore(state => state.carBrand);
@@ -31,7 +32,7 @@ export const SelectedCar = () => {
     }, [])
 
     if (!carBrand || !carName || !mileage) {
-        return null
+        return <Skeleton />
     }
 
     return (

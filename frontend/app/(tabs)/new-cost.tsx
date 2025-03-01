@@ -212,8 +212,6 @@ const styles = StyleSheet.create({
     summaryWrapper: {
         marginTop: 30,
         padding: 10,
-        borderRadius: 10,
-        backgroundColor: "#f3f4f6",
         width: "100%",
     },
     summaryRow: {

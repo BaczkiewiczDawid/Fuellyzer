@@ -107,6 +107,12 @@ export default function NewCost() {
                     </View>
                     <FormInput title={"Total price"} placeholder={"Total price"} type={"number"} value={totalCost}
                                setValue={setTotalCost} error={error} badge={"$"}/>
+                    <select style={styles.select} onChange={(e) => setFuelType(e.target.value)}>
+                        <option value={"PB95"}>PB95</option>
+                        <option value={"PB98"}>PB98</option>
+                        <option value={"ON"}>ON</option>
+                        <option value={"LPG"}>LPG</option>
+                    </select>
                     <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
                                value={mileage} setValue={setMileage} error={error} badge={"km"}/>
                 </View>
@@ -143,6 +149,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         color: "#101D1E",
         borderWidth: 2,
+        borderColor: "#e5e7eb",
     },
     form: {
         marginTop: 30,

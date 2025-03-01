@@ -2,12 +2,11 @@ import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
 import {Description} from "@/components/description";
 import {Navigation} from "@/components/navigation";
-import {ReactNode, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {View, StyleSheet, Pressable, Text, TouchableOpacity} from "react-native";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {FormInput} from "@/components/form-input";
-import {Ionicons} from "@expo/vector-icons";
 import Svg, {Path, Circle} from "react-native-svg";
 
 export default function NewCost() {

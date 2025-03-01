@@ -6,7 +6,7 @@ import {ReactNode, useEffect, useState} from "react";
 import {View, StyleSheet, Pressable, Text, TouchableOpacity} from "react-native";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
-import {FormLabel} from "@/components/form-label";
+import {FormInput} from "@/components/form-input";
 import {Ionicons} from "@expo/vector-icons";
 import Svg, {Path, Circle} from "react-native-svg";
 
@@ -18,7 +18,7 @@ export default function NewCost() {
     const [fuelAmount, setFuelAmount] = useState<number | undefined>(undefined)
     const [fuelType, setFuelType] = useState<string | undefined>(undefined)
     const [price, setPrice] = useState<number | undefined>(undefined)
-    const [cost, setCost] = useState<number | undefined>(undefined)
+    const [totalCost, setTotalCost] = useState<number | undefined>(undefined)
     const [fullRefuel, setFullRefuel] = useState<boolean>(true)
     const [error, setError] = useState<boolean>(false)
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
@@ -48,11 +48,15 @@ export default function NewCost() {
     }, [defaultSelectedCar]);
 
     const handleNewCost = () => {
-        if (!mileage || !fuelAmount || !price || !cost) {
+        if (!mileage || !fuelAmount || !price || !totalCost) {
             setError(true)
             return
         }
     }
+
+    useEffect(() => {
+        setTotalCost(price && fuelAmount ? price * fuelAmount : undefined)
+    }, [price, fuelAmount])
 
     return (
         <Wrapper>
@@ -90,19 +94,40 @@ export default function NewCost() {
                         </TouchableOpacity>
                     ))}
                 </View>
-                <form style={styles.form}>
-                    <FormLabel title={"Mileage"} placeholder={"Mileage..."} type={"number"} value={mileage}
-                               setValue={setMileage} error={error}/>
-                    <FormLabel title={"Fuel amount"} placeholder={"Fuel amount..."} type={"number"} value={fuelAmount}
-                               setValue={setFuelAmount} error={error}/>
-                    <FormLabel title={"Price per litre"} placeholder={"Price per litre..."} type={"number"}
-                               value={price}
-                               setValue={setPrice} error={error}/>
-                    <FormLabel title={"Total cost"} placeholder={"Total cost..."} type={"number"} value={cost}
-                               setValue={setCost} error={error}/>
-                    <Pressable onPress={() => handleNewCost()} style={styles.button}><Text
-                        style={styles.buttonText}>Save</Text></Pressable>
-                </form>
+                <View style={styles.form}>
+                    <View style={styles.inputsContainer}>
+                        <View style={styles.inputWrapper}>
+                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"} value={price}
+                                       setValue={setPrice} error={error} badge={"$/L"}/>
+                        </View>
+                        <View style={styles.inputWrapper}>
+                            <FormInput title={"Liters Fueled"} placeholder={"Liters Fueled..."} type={"number"}
+                                       value={fuelAmount}
+                                       setValue={setFuelAmount} error={error} badge={"L"}/>
+                        </View>
+                    </View>
+                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"} value={totalCost}
+                               setValue={setTotalCost} error={error} badge={"$"}/>
+                    <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
+                               value={mileage} setValue={setMileage} error={error} badge={"km"}/>
+                </View>
+                <View style={styles.summaryWrapper}>
+                    <Text>Summary</Text>
+                    <View style={styles.summaryRow}>
+                        <Text>Fuel amount</Text>
+                        <Text>{fuelAmount}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text>Price per Liter</Text>
+                        <Text>{price}</Text>
+                    </View>
+                    <View style={[styles.summaryRow, styles.lastRow]}>
+                        <Text style={styles.textBold}>Total</Text>
+                        <Text style={styles.textBold}>{totalCost}</Text>
+                    </View>
+                </View>
+                <Pressable onPress={() => handleNewCost()} style={styles.button}><Text
+                    style={styles.buttonText}>Save Expense</Text></Pressable>
             </View>
         </Wrapper>
     )
@@ -175,5 +200,34 @@ const styles = StyleSheet.create({
     },
     vehicleContainer: {
         marginTop: 30,
+    },
+    inputsContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        gap: 10,
+    },
+    inputWrapper: {
+        width: "48%",
+    },
+    summaryWrapper: {
+        marginTop: 30,
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: "#f3f4f6",
+        width: "100%",
+    },
+    summaryRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingVertical: 5,
+    },
+    textBold: {
+        fontWeight: "700",
+    },
+    lastRow: {
+        borderTopWidth: 1,
+        marginTop: 10,
+        paddingTop: 10,
     }
 })

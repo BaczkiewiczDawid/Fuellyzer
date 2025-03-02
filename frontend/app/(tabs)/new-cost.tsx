@@ -8,6 +8,7 @@ import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {FormInput} from "@/components/form-input";
 import Svg, {Path, Circle} from "react-native-svg";
+import {router} from "expo-router";
 
 export default function NewCost() {
     const [activeView, setActiveView] = useState("Refuel");
@@ -15,13 +16,15 @@ export default function NewCost() {
     const [availableCars, setAvailableCars] = useState<Car[]>([])
     const [mileage, setMileage] = useState<number | undefined>(undefined)
     const [fuelAmount, setFuelAmount] = useState<number | undefined>(undefined)
-    const [fuelType, setFuelType] = useState<string | undefined>(undefined)
+    const [fuelType, setFuelType] = useState<string>("PB95")
     const [price, setPrice] = useState<number | undefined>(undefined)
     const [totalCost, setTotalCost] = useState<number | undefined>(undefined)
     const [fullRefuel, setFullRefuel] = useState<boolean>(true)
     const [error, setError] = useState<boolean>(false)
-    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
-    const [selectedCar, setSelectedCar] = useState<any>(undefined)
+    const [selectedCar, setSelectedCar] = useState<{
+        carBrand: string,
+        carName: string,
+    } | undefined>(undefined)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,14 +45,41 @@ export default function NewCost() {
 
     useEffect(() => {
         if (defaultSelectedCar) {
-            setSelectedCar(defaultSelectedCar.carName)
+            setSelectedCar({
+                carBrand: defaultSelectedCar.carBrand,
+                carName: defaultSelectedCar.carName,
+            })
         }
     }, [defaultSelectedCar]);
 
-    const handleNewCost = () => {
-        if (!mileage || !fuelAmount || !price || !totalCost) {
+    const handleNewCost = async () => {
+        if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {
             setError(true)
             return
+        }
+
+        console.log(selectedCar)
+
+        const response = await useApi("http://localhost:4000/new-expense", "POST", {
+            carBrand: selectedCar.carBrand,
+            carName: selectedCar.carName,
+            mileage,
+            fuelAmount,
+            fuelType,
+            price,
+            totalCost,
+            email: "baczkiewicz.dawid22@gmail.com",
+            type: activeView,
+            date: new Date().toISOString().split("T")[0],
+            fullRefuel,
+        })
+
+        if (response) {
+            router.push("/")
+            setMileage(undefined)
+            setTotalCost(undefined)
+            setPrice(undefined)
+            setFuelAmount(undefined)
         }
     }
 
@@ -67,8 +97,11 @@ export default function NewCost() {
                     {availableCars.map((car) => (
                         <TouchableOpacity
                             key={car.id}
-                            style={[styles.carOption, selectedCar === car.carName && styles.selected]}
-                            onPress={() => setSelectedCar(car.carName)}
+                            style={[styles.carOption, selectedCar?.carName === car.carName && styles.selected]}
+                            onPress={() => setSelectedCar({
+                                carBrand: car.carBrand,
+                                carName: car.carName,
+                            })}
                         >
                             <View style={styles.carIcon}>
                                 <Svg width={20} height={20} viewBox="0 0 24 24" stroke="black" strokeWidth={2}
@@ -84,7 +117,7 @@ export default function NewCost() {
                                 <Text
                                     style={styles.carName}>{car.carBrand} {car.carName}</Text>
                             </View>
-                            {selectedCar === car.carName && (
+                            {selectedCar?.carName === car.carName && (
                                 <Svg width={20} height={20} viewBox="0 0 24 24" stroke="black" strokeWidth={2}
                                      fill="none">
                                     <Path d="M20 6L9 17l-5-5"/>

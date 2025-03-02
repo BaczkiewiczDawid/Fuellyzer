@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, Image} from "react-native";
 import ArrowIcon from "../../assets/images/arrow.png";
+import {DataFormatter} from "@/helpers/data-formatter";
 
 type Props = {
     type: string
@@ -10,11 +11,11 @@ export const Summary = ({type}: Props) => {
         <View style={styles.monthlyContainer}>
             <Image style={styles.icon} source={ArrowIcon} alt="Arrow icon"/>
             <View>
-                <Text style={styles.label}>$234</Text>
+                <Text style={styles.label}>{DataFormatter(325, "moneyRounded")}</Text>
                 <Text style={styles.paragraph}>This month</Text>
             </View>
             <View>
-                <Text style={styles.label}>$234</Text>
+                <Text style={styles.label}>{DataFormatter(1248.64, "moneyRounded")}</Text>
                 <Text style={styles.paragraph}>Last month</Text>
             </View>
         </View>

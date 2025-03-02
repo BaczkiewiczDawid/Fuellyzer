@@ -9,6 +9,7 @@ import {Car} from "@/types/car";
 import {FormInput} from "@/components/form-input";
 import Svg, {Path, Circle} from "react-native-svg";
 import {router} from "expo-router";
+import {DataFormatter} from "@/helpers/data-formatter";
 
 export default function NewCost() {
     const [activeView, setActiveView] = useState("Refuel");
@@ -138,16 +139,16 @@ export default function NewCost() {
                 <View style={styles.form}>
                     <View style={styles.inputsContainer}>
                         <View style={styles.inputWrapper}>
-                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"} value={price}
+                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"} value={DataFormatter(price, "rounded")}
                                        setValue={setPrice} error={error} badge={"$/L"}/>
                         </View>
                         <View style={styles.inputWrapper}>
                             <FormInput title={"Liters Fueled"} placeholder={"Liters Fueled..."} type={"number"}
-                                       value={fuelAmount}
+                                       value={DataFormatter(fuelAmount, "rounded")}
                                        setValue={setFuelAmount} error={error} badge={"L"}/>
                         </View>
                     </View>
-                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"} value={totalCost}
+                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"} value={DataFormatter(totalCost, "rounded")}
                                setValue={setTotalCost} error={error} badge={"$"}/>
                     <select style={styles.select} onChange={(e) => setFuelType(e.target.value)}>
                         <option value={"PB95"}>PB95</option>
@@ -175,11 +176,11 @@ export default function NewCost() {
                     </View>
                     <View style={styles.summaryRow}>
                         <Text>Price per Liter</Text>
-                        <Text>{price}</Text>
+                        <Text>{DataFormatter(price, "moneyRounded")}</Text>
                     </View>
                     <View style={[styles.summaryRow, styles.lastRow]}>
                         <Text style={styles.textBold}>Total</Text>
-                        <Text style={styles.textBold}>{totalCost}</Text>
+                        <Text style={styles.textBold}>{DataFormatter(totalCost, "moneyRounded")}</Text>
                     </View>
                 </View>
                 <Pressable onPress={() => handleNewCost()} style={styles.button}><Text

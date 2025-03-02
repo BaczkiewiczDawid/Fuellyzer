@@ -156,7 +156,8 @@ export default function NewCost() {
                         <option value={"LPG"}>LPG</option>
                     </select>
                     <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
-                               value={mileage} setValue={setMileage} error={error} badge={"km"}/>
+                               value={mileage} setValue={setMileage} error={error} badge={"km"}
+                               errorType={(selectedCar?.mileage && mileage && mileage < selectedCar?.mileage) ? "mileage" : "required"}/>
                     <View style={styles.inputsContainer}>
                         <Text style={styles.labelText}>Full refuel</Text>
                         <Switch value={fullRefuel} onValueChange={() => setFullRefuel(!fullRefuel)}

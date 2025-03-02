@@ -16,9 +16,10 @@ type Props = {
     error: boolean,
     badge?: "$" | "km" | "L" | "L/100km" | "$/L"
     step?: "string"
+    errorType?: "required" | "mileage"
 }
 
-export const FormInput = ({title, placeholder, type, value, setValue, error, badge}: Props) => {
+export const FormInput = ({title, placeholder, type, value, setValue, error, badge, errorType}: Props) => {
     let keyboardType: KeyboardTypeOptions = "default"
 
     if (type === "number") {
@@ -26,6 +27,23 @@ export const FormInput = ({title, placeholder, type, value, setValue, error, bad
     }
     if (type === "email") {
         keyboardType = "email-address"
+    }
+
+    let errorMessage = ""
+
+    switch (errorType) {
+        case "mileage":
+            errorMessage = "Mileage too low"
+            break
+        case "required":
+            errorMessage = "This field is required"
+            break
+        default:
+            errorMessage = "This field is required"
+    }
+
+    if (errorType === "required" && value) {
+        error = false
     }
 
     return (
@@ -43,7 +61,7 @@ export const FormInput = ({title, placeholder, type, value, setValue, error, bad
                 />
                 {badge && <Text style={styles.inputBadge}>{badge}</Text>}
             </View>
-            {error && !value && <Text style={styles.error}>This field is required</Text>}
+            {error && <Text style={styles.error}>{errorMessage}</Text>}
         </View>
     )
 }

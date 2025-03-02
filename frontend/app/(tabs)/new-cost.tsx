@@ -3,7 +3,7 @@ import {Title} from "@/components/title";
 import {Description} from "@/components/description";
 import {Navigation} from "@/components/navigation";
 import {useEffect, useState} from "react";
-import {View, StyleSheet, Pressable, Text, TouchableOpacity} from "react-native";
+import {View, StyleSheet, Pressable, Text, TouchableOpacity, Switch} from "react-native";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {FormInput} from "@/components/form-input";
@@ -58,8 +58,6 @@ export default function NewCost() {
             return
         }
 
-        console.log(selectedCar)
-
         const response = await useApi("http://localhost:4000/new-expense", "POST", {
             carBrand: selectedCar.carBrand,
             carName: selectedCar.carName,
@@ -86,6 +84,9 @@ export default function NewCost() {
     useEffect(() => {
         setTotalCost(price && fuelAmount ? price * fuelAmount : undefined)
     }, [price, fuelAmount])
+
+    const mainColor = '#1E88E5'
+    const trackColor = '#BBDEFB'
 
     return (
         <Wrapper>
@@ -148,6 +149,14 @@ export default function NewCost() {
                     </select>
                     <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
                                value={mileage} setValue={setMileage} error={error} badge={"km"}/>
+                    <View style={styles.inputsContainer}>
+                        <Text style={styles.labelText}>Full refuel</Text>
+                        <Switch value={fullRefuel} onValueChange={() => setFullRefuel(!fullRefuel)}
+                                trackColor={{false: '#D8D8D8', true: trackColor}}
+                                thumbColor={fullRefuel ? mainColor : '#F4F3F4'}
+                                ios_backgroundColor="#3e3e3e"
+                        />
+                    </View>
                 </View>
                 <View style={styles.summaryWrapper}>
                     <Text>Summary</Text>
@@ -266,5 +275,10 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         marginTop: 10,
         paddingTop: 10,
+    },
+    labelText: {
+        color: "#374151",
+        fontSize: 14,
+        fontWeight: "500",
     }
 })

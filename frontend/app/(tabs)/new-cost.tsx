@@ -24,6 +24,7 @@ export default function NewCost() {
     const [selectedCar, setSelectedCar] = useState<{
         carBrand: string,
         carName: string,
+        mileage?: number
     } | undefined>(undefined)
 
     useEffect(() => {
@@ -48,12 +49,18 @@ export default function NewCost() {
             setSelectedCar({
                 carBrand: defaultSelectedCar.carBrand,
                 carName: defaultSelectedCar.carName,
+                mileage: defaultSelectedCar.mileage
             })
         }
     }, [defaultSelectedCar]);
 
     const handleNewCost = async () => {
         if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {
+            setError(true)
+            return
+        }
+
+        if (selectedCar.mileage && mileage < selectedCar?.mileage) {
             setError(true)
             return
         }
@@ -102,6 +109,7 @@ export default function NewCost() {
                             onPress={() => setSelectedCar({
                                 carBrand: car.carBrand,
                                 carName: car.carName,
+                                mileage: car.mileage
                             })}
                         >
                             <View style={styles.carIcon}>

@@ -18,7 +18,7 @@ type Props = {
     step?: "string"
 }
 
-export const FormInput = ({title, placeholder, type, value, setValue, error, badge, step}: Props) => {
+export const FormInput = ({title, placeholder, type, value, setValue, error, badge}: Props) => {
     let keyboardType: KeyboardTypeOptions = "default"
 
     if (type === "number") {

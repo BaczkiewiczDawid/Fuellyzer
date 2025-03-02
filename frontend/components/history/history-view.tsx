@@ -1,15 +1,18 @@
-import {View, Text} from "react-native";
-import {HistoryNavigation} from "@/components/history/history-navigation";
+import {View} from "react-native";
 import {useState} from "react";
 import {HistoryItems} from "@/components/history/history-items";
+import {Navigation} from "@/components/navigation";
+
+type HistoryViewType = "All" | "Refuel" | "Maintance"
 
 export const HistoryView = () => {
-    const [activeView, setActiveView] = useState<"All" | "Refuel" | "Maintance">("All");
+    const [activeView, setActiveView] = useState("All");
+    const views = ["All", "Refuel", "Maintance"];
 
     return (
         <View>
-            <HistoryNavigation activeView={activeView} setActiveView={setActiveView}/>
-            <HistoryItems activeView={activeView}/>
+            <Navigation activeView={activeView} setActiveView={setActiveView} views={views}/>
+            <HistoryItems activeView={activeView as HistoryViewType}/>
         </View>
     )
 }

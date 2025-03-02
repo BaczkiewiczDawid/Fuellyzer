@@ -25,8 +25,8 @@ export const Skeleton = () => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.skeletonLong, {opacity}]}></View>
-            <View style={[styles.skeletonShort, {opacity}]}></View>
+            <Animated.View style={[styles.skeletonLong, {opacity}]}></Animated.View>
+            <Animated.View style={[styles.skeletonShort, {opacity}]}></Animated.View>
         </View>
     )
 }

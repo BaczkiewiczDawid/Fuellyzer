@@ -1,5 +1,6 @@
 import {Text, View, StyleSheet} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
+import {DataFormatter} from "@/helpers/data-formatter";
 
 type Props = {
     item: HistoryItemType
@@ -21,7 +22,7 @@ export const HistoryItem = ({item}: Props) => {
                     <Text style={styles.detailsTextSecondary}>{item.details}</Text>
                 </View>
             </View>
-            <Text style={styles.total}>{item.total}</Text>
+            <Text style={styles.total}>{DataFormatter(item.total, "moneyRounded")}</Text>
         </View>
     )
 }

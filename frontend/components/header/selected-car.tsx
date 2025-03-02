@@ -5,6 +5,7 @@ import {useUserStore} from "@/context/user";
 import {useEffect} from "react";
 import {useApi} from "@/hooks/useApi";
 import {Skeleton} from "@/components/skeleton";
+import {DataFormatter} from "@/helpers/data-formatter";
 
 export const SelectedCar = () => {
     const carBrand = useUserStore(state => state.carBrand);
@@ -38,7 +39,7 @@ export const SelectedCar = () => {
     return (
         <View style={styles.infoContainer}>
             <Title>{carBrand} {carName}</Title>
-            <Description>{mileage} {mileageMeasure === "kilometers" ? "km" : "miles"}</Description>
+            <Description>{DataFormatter(mileage, mileageMeasure)}</Description>
         </View>
     )
 }

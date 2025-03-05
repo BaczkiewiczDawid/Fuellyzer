@@ -1,7 +1,5 @@
-import {StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList} from 'react-native';
+import {StyleSheet, View, Image, Dimensions, FlatList} from 'react-native';
 import {Wrapper} from "@/components/wrapper";
-import {Title} from "@/components/title";
-import {Description} from "@/components/description";
 import carImage from '../../assets/images/car.png';
 import {Summary} from "@/components/header/summary";
 import {HeaderNavigation} from "@/components/header/header-navigation";

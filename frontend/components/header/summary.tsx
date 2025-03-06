@@ -18,6 +18,8 @@ export const Summary = ({type}: Props) => {
     const [prevData, setPrevData] = useState<number>(0)
     const [currentDataText, setCurrentDataText] = useState<string>("This month")
     const [prevDataText, setPrevDataText] = useState<string>("Last month")
+    const [inuranceDate, setInsuranceDate] = useState<string>("")
+    const [oilChange, setOilChange] = useState<number>(0)
 
     const summarizeData = (data: any[]) => {
         return data.reduce((sum, item) => sum + (item.total || 0), 0)
@@ -25,10 +27,17 @@ export const Summary = ({type}: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApi("http://localhost:4000/history", "GET")
+            const historyResponse = await useApi("http://localhost:4000/history", "GET")
+            const carDetailsResponse = await useApi("http://localhost:4000/user-cars-list", "GET")
 
             if (carBrand && carName) {
-                setHistoryData(await response.filter((item: Car) => item.carBrand === carBrand && item.carName === carName))
+                setHistoryData(await historyResponse.filter((item: Car) => item.carBrand === carBrand && item.carName === carName))
+            }
+
+            if (carBrand && carName) {
+                const carDetails = await carDetailsResponse.find((item: Car) => item.carBrand === carBrand && item.carName === carName)
+                setInsuranceDate(carDetails.insurance)
+                setOilChange(carDetailsResponse.mileage - carDetails.oilChange)
             }
         }
 
@@ -126,10 +135,10 @@ export const Summary = ({type}: Props) => {
 
                 break
             case "reminders":
-                calculateReminders()
+                const insuranceDaysDiff = Math.ceil((new Date(inuranceDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
-                setCurrentDataText("Oil change in 34k km")
-                setPrevDataText("OC/AC ends in")
+                setCurrentDataText(`Oil change in ${oilChange} km`)
+                setPrevDataText(`OC/AC ends in ${insuranceDaysDiff}`)
                 break
         }
     }

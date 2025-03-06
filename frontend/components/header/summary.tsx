@@ -107,10 +107,6 @@ export const Summary = ({type}: Props) => {
         };
     };
 
-    const calculateReminders = () => {
-
-    }
-
     const calculateData = () => {
         let result;
 

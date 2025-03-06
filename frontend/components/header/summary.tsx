@@ -146,6 +146,7 @@ export const Summary = ({type}: Props) => {
     return (
         <View style={styles.monthlyContainer}>
             {type !== "reminders" &&
+                //TODO: rotate arrow depending on statistics value
                 <Image style={styles.icon} source={ArrowIcon} alt="Arrow icon"/>
             }
             <View>

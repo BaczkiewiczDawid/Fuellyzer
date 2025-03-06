@@ -145,7 +145,9 @@ export const Summary = ({type}: Props) => {
 
     return (
         <View style={styles.monthlyContainer}>
-            <Image style={styles.icon} source={ArrowIcon} alt="Arrow icon"/>
+            {type !== "reminders" &&
+                <Image style={styles.icon} source={ArrowIcon} alt="Arrow icon"/>
+            }
             <View>
                 <Text style={styles.label}>{DataFormatter(currentData, "moneyRounded")}</Text>
                 <Text style={styles.paragraph}>{currentDataText}</Text>

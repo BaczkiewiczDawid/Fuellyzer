@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, Image} from "react-native";
-import ArrowIcon from "../../assets/images/arrow.png";
+import ArrowIconUp from "../../assets/images/arrow-up.png";
+import ArrowIconDown from "../../assets/images/arrow-down.png";
 import {DataFormatter} from "@/helpers/data-formatter";
 import {useEffect, useState} from "react";
 import {useApi} from "@/hooks/useApi";
@@ -18,7 +19,7 @@ export const Summary = ({type}: Props) => {
     const [prevData, setPrevData] = useState<number>(0)
     const [currentDataText, setCurrentDataText] = useState<string>("This month")
     const [prevDataText, setPrevDataText] = useState<string>("Last month")
-    const [inuranceDate, setInsuranceDate] = useState<string>("")
+    const [insuranceDate, setInsuranceDate] = useState<string>("")
     const [oilChange, setOilChange] = useState<number>(0)
 
     const summarizeData = (data: any[]) => {
@@ -131,7 +132,7 @@ export const Summary = ({type}: Props) => {
 
                 break
             case "reminders":
-                const insuranceDaysDiff = Math.ceil((new Date(inuranceDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+                const insuranceDaysDiff = Math.ceil((new Date(insuranceDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
                 setCurrentDataText(`Oil change in ${oilChange} km`)
                 setPrevDataText(`OC/AC ends in ${insuranceDaysDiff}`)
@@ -141,13 +142,14 @@ export const Summary = ({type}: Props) => {
 
     useEffect(() => {
         calculateData()
-    }, [historyData]);
+    }, [historyData, type, insuranceDate, oilChange]);
 
     return (
         <View style={styles.monthlyContainer}>
             {type !== "reminders" &&
-                //TODO: rotate arrow depending on statistics value
-                <Image style={styles.icon} source={ArrowIcon} alt="Arrow icon"/>
+            currentData > prevData ?
+                <Image style={styles.icon} source={ArrowIconUp}/> :
+                <Image style={styles.icon} source={ArrowIconDown}/>
             }
             <View>
                 <Text style={styles.label}>{DataFormatter(currentData, "moneyRounded")}</Text>
@@ -178,6 +180,5 @@ const styles = StyleSheet.create({
     icon: {
         width: 20,
         height: 20,
-        color: "#7B7B7B",
-    }
+    },
 })

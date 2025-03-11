@@ -7,4 +7,6 @@ export type Car = {
     email: string
     defaultSelected: boolean
     mileageMeasure: string
+    oilChange: number
+    insurance: string
 }

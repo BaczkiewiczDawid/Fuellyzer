@@ -26,4 +26,24 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.patch("/", async (req, res) => {
+    try {
+        const data = req.body;
+
+        const response = await db.update(userCarsList).set({
+            carBrand: data.carBrand,
+            carName: data.carName,
+            mileage: data.miles,
+            oilChange: data.oilChange,
+            insurance: data.insurance,
+        }).where(
+            eq(userCarsList.email, data.email),
+        );
+
+        res.send(response);
+    } catch (error) {
+        res.status(500).json({error});
+    }
+})
+
 export default router;

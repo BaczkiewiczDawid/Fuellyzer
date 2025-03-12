@@ -13,6 +13,8 @@ app.use("/history", historyRoute);
 app.use("/user-cars-list", userCarsList);
 app.use("/new-expense", newExpense);
 app.use("/new-car", newCar);
+app.use("/update-car", newCar);
+app.use("/delete-car", newCar);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on: http://localhost:${PORT}`));

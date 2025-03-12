@@ -46,4 +46,22 @@ router.patch("/", async (req, res) => {
     }
 })
 
+router.delete("/", async (req, res) => {
+    try {
+        const data = req.body;
+
+        const response = await db.delete(userCarsList).where(
+            and(
+                eq(userCarsList.email, data.email),
+                eq(userCarsList.carBrand, data.carBrand),
+                eq(userCarsList.mileage, data.carName),
+            ),
+        );
+
+        res.send(response);
+    } catch (error) {
+        res.status(500).json({error});
+    }
+})
+
 export default router;

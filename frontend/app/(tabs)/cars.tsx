@@ -1,33 +1,49 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
 import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
 import {Description} from "@/components/description";
 import deleteIcon from "@/assets/images/delete-icon.png";
+import {useEffect, useState} from "react";
+import {useApi} from "@/hooks/useApi";
+import {Car} from "@/types/car";
 
 export default function TabTwoScreen() {
+    const [userCarsList, setUserCarsList] = useState<Car[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+
+            if (response) {
+                setUserCarsList(response);
+            }
+        }
+
+        fetchData();
+    }, []);
+
+    const handleDelete = async (carBrand: string, carName: string) => {
+        const response = await useApi("http://localhost:4000/new-car", "DELETE", {
+            email: "baczkiewicz.dawid22@gmail.com",
+            carBrand,
+            carName,
+        })
+    }
+
+
     return (
         <Wrapper>
-            <View style={styles.itemContainer}>
-                <View>
-                    <Title>Volkswagen</Title>
-                    <Description>Golf VII</Description>
+            {userCarsList.map((car) => (
+                <View key={car.carName} style={styles.itemContainer}>
+                    <View>
+                        <Title>{car.carBrand} {car.carName}</Title>
+                        <Description>{car.mileage} km</Description>
+                    </View>
+                    <Pressable onPress={() => handleDelete(car.carBrand, car.carName)}>
+                        <Image style={styles.icon} source={deleteIcon}/>
+                    </Pressable>
                 </View>
-                <Image style={styles.icon} source={deleteIcon} alt={"Trash icon"}/>
-            </View>
-            <View style={styles.itemContainer}>
-                <View>
-                    <Title>Volkswagen</Title>
-                    <Description>Golf VII</Description>
-                </View>
-                <Image style={styles.icon} source={deleteIcon} alt={"Trash icon"}/>
-            </View>
-            <View style={styles.itemContainer}>
-                <View>
-                    <Title>Volkswagen</Title>
-                    <Description>Golf VII</Description>
-                </View>
-                <Image style={styles.icon} source={deleteIcon} alt={"Trash icon"}/>
-            </View>
+            ))}
         </Wrapper>
     );
 }

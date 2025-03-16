@@ -1,4 +1,4 @@
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, View} from 'react-native';
 import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
 import {Description} from "@/components/description";
@@ -6,10 +6,11 @@ import deleteIcon from "@/assets/images/delete-icon.png";
 import {useEffect, useState} from "react";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
-import {Link} from "expo-router";
+import {Button} from "@/components/button";
 
 export default function Cars() {
     const [userCarsList, setUserCarsList] = useState<Car[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,6 +19,8 @@ export default function Cars() {
             if (response) {
                 setUserCarsList(response);
             }
+
+            setIsLoading(false);
         }
 
         fetchData();
@@ -34,13 +37,9 @@ export default function Cars() {
 
     return (
         <Wrapper footerContent={
-            <Link href={"/new-car"} style={styles.button}>
-                <Pressable>
-                    <Text style={styles.text}>Add new car</Text>
-                </Pressable>
-            </Link>
+            <Button href={"/new-car"} text={"Add new car"}/>
         }>
-            {!userCarsList.length && (
+            {!userCarsList.length && !isLoading && (
                 <View style={styles.noDataContainer}>
                     <Title centered>
                         There’s no cars
@@ -91,32 +90,7 @@ const styles = StyleSheet.create({
                     30,
                 width:
                     "60%",
-            }
-            ,
-            button: {
-                backgroundColor: "#0F77F0",
-                padding:
-                    10,
-                borderRadius:
-                    5,
-                textAlign:
-                    "center",
-                width:
-                    "60%",
-                margin:
-                    "auto",
-                marginTop:
-                    20,
-                color:
-                    "#fafafa",
-                fontWeight:
-                    "bold",
-                position:
-                    "static",
-                bottom:
-                    20,
-            }
-            ,
+            },
             text: {
                 color: "#fafafa",
                 textAlign:

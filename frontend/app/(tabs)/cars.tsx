@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
 import {Description} from "@/components/description";
@@ -6,8 +6,9 @@ import deleteIcon from "@/assets/images/delete-icon.png";
 import {useEffect, useState} from "react";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
+import {Link} from "expo-router";
 
-export default function TabTwoScreen() {
+export default function Cars() {
     const [userCarsList, setUserCarsList] = useState<Car[]>([]);
 
     useEffect(() => {
@@ -32,7 +33,20 @@ export default function TabTwoScreen() {
 
 
     return (
-        <Wrapper>
+        <Wrapper footerContent={
+            <Link href={"/new-car"} style={styles.button}>
+                <Pressable>
+                    <Text style={styles.text}>Add new car</Text>
+                </Pressable>
+            </Link>
+        }>
+            {!userCarsList.length && (
+                <View style={styles.noDataContainer}>
+                    <Title centered>
+                        There’s no cars
+                        added yet</Title>
+                </View>
+            )}
             {userCarsList.map((car) => (
                 <View key={car.carName} style={styles.itemContainer}>
                     <View>
@@ -49,17 +63,65 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
-    itemContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e5e5e5',
-    },
-    icon: {
-        width: 20,
-        height: 20,
-        cursor: "pointer",
-    }
-});
+            itemContainer: {
+                flexDirection: 'row',
+                justifyContent:
+                    'space-between',
+                alignItems:
+                    'center',
+                padding:
+                    10,
+                borderBottomWidth:
+                    1,
+                borderBottomColor:
+                    '#e5e5e5',
+            }
+            ,
+            icon: {
+                width: 20,
+                height:
+                    20,
+                cursor:
+                    "pointer",
+            }
+            ,
+            noDataContainer: {
+                margin: "auto",
+                marginTop:
+                    30,
+                width:
+                    "60%",
+            }
+            ,
+            button: {
+                backgroundColor: "#0F77F0",
+                padding:
+                    10,
+                borderRadius:
+                    5,
+                textAlign:
+                    "center",
+                width:
+                    "60%",
+                margin:
+                    "auto",
+                marginTop:
+                    20,
+                color:
+                    "#fafafa",
+                fontWeight:
+                    "bold",
+                position:
+                    "static",
+                bottom:
+                    20,
+            }
+            ,
+            text: {
+                color: "#fafafa",
+                textAlign:
+                    "center",
+            }
+        }
+    )
+;

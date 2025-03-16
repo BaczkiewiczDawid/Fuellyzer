@@ -4,6 +4,7 @@ import {Title} from "@/components/title";
 import {Select} from "@/components/select";
 import {useState} from "react";
 import {Button} from "@/components/button";
+import FormInput from "@/components/form-input";
 
 const carBrands = ["Audi", "BMW", "Volkswagen"];
 const carModels = [{
@@ -22,6 +23,7 @@ export default function NewCar() {
     const [selectedModel, setSelectedModel] = useState("A3");
     const [selectedYear, setSelectedYear] = useState(undefined);
     const [mileage, setMileage] = useState(undefined);
+    const [insurance, setInsurance] = useState(undefined);
 
     return (
         <Wrapper footerContent={
@@ -34,6 +36,11 @@ export default function NewCar() {
                 <Select options={carModels.filter((car) => car.brand === selectedBrand)[0].models} value={selectedModel}
                         setValue={setSelectedModel}/>
                 <Select options={["2010", "2011", "2012"]} value={selectedYear} setValue={setSelectedYear}/>
+                <FormInput title={"Mileage"} placeholder={"Mileage..."} type={"number"} value={mileage}
+                           setValue={setMileage} error={false}/>
+                <FormInput title={"Insurance"} placeholder={"Insurance expiration date..."} type={"date"}
+                           value={insurance}
+                           setValue={setInsurance} error={false}/>
             </View>
         </Wrapper>
     )

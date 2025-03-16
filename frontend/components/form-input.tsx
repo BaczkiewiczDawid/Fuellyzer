@@ -11,7 +11,7 @@ import {Format} from "@/helpers/data-formatter";
 type Props = {
     title: string,
     placeholder: string
-    type: "string" | "number" | "email" | "password"
+    type: "string" | "number" | "email" | "password" | "date"
     value: string | number | undefined
     setValue: (val: any) => void
     error: boolean,

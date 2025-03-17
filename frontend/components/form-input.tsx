@@ -6,7 +6,6 @@ import {
     TextInput,
     KeyboardTypeOptions
 } from 'react-native';
-import {Format} from "@/helpers/data-formatter";
 
 type Props = {
     title: string,

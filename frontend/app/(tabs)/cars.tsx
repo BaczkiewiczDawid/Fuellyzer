@@ -32,6 +32,10 @@ export default function Cars() {
             carBrand,
             carName,
         })
+
+        if (response) {
+            setUserCarsList(userCarsList.filter((car) => car.carBrand !== carBrand && car.carName !== carName));
+        }
     }
 
 

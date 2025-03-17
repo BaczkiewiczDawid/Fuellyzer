@@ -5,6 +5,7 @@ import {Select} from "@/components/select";
 import {useState} from "react";
 import {Button} from "@/components/button";
 import FormInput from "@/components/form-input";
+import {useApi} from "@/hooks/useApi";
 
 const carBrands = ["Audi", "BMW", "Volkswagen"];
 const carModels = [{
@@ -25,10 +26,20 @@ export default function NewCar() {
     const [mileage, setMileage] = useState(undefined);
     const [insurance, setInsurance] = useState(undefined);
 
+    const handleAddNewCar = async () => {
+        await useApi("http://localhost:4000/new-car", "POST", {
+            email: "baczkiewicz.dawid22@gmail.com",
+            carBrand: selectedBrand,
+            carName: selectedModel,
+            mileage,
+            insurance,
+            oilChange: 10000,
+        })
+    }
+
     return (
         <Wrapper footerContent={
-            <Button onPress={() => {
-            }} text={"Save"}/>
+            <Button onPress={() => handleAddNewCar()} text={"Save"}/>
         }>
             <Title>Add new car</Title>
             <View style={styles.form}>

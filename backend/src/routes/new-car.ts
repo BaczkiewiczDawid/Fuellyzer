@@ -50,8 +50,6 @@ router.delete("/", async (req, res) => {
     try {
         const data = req.body;
 
-        console.log(data)
-
         const response = await db.delete(userCarsList).where(
             and(
                 eq(userCarsList.email, data.email),

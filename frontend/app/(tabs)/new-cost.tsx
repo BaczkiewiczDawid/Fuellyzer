@@ -3,13 +3,14 @@ import {Title} from "@/components/title";
 import {Description} from "@/components/description";
 import {Navigation} from "@/components/navigation";
 import {useEffect, useState} from "react";
-import {View, StyleSheet, Pressable, Text, TouchableOpacity, Switch} from "react-native";
+import {Pressable, StyleSheet, Switch, Text, TouchableOpacity, View} from "react-native";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {FormInput} from "@/components/form-input";
-import Svg, {Path, Circle} from "react-native-svg";
+import Svg, {Circle, Path} from "react-native-svg";
 import {router} from "expo-router";
 import {DataFormatter} from "@/helpers/data-formatter";
+import CustomSelect from "@/components/customSelect";
 
 export default function NewCost() {
     const [activeView, setActiveView] = useState("Refuel");
@@ -27,6 +28,16 @@ export default function NewCost() {
         carName: string,
         mileage?: number
     } | undefined>(undefined)
+
+    const mainColor = '#1E88E5'
+    const trackColor = '#BBDEFB'
+
+    const fuelOptions = [
+        {label: 'PB95', value: 'PB95'},
+        {label: 'PB98', value: 'PB98'},
+        {label: 'ON', value: 'ON'},
+        {label: 'LPG', value: 'LPG'},
+    ];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -93,9 +104,6 @@ export default function NewCost() {
         setTotalCost(price && fuelAmount ? price * fuelAmount : undefined)
     }, [price, fuelAmount])
 
-    const mainColor = '#1E88E5'
-    const trackColor = '#BBDEFB'
-
     return (
         <Wrapper>
             <Title>New cost</Title>
@@ -139,7 +147,8 @@ export default function NewCost() {
                 <View style={styles.form}>
                     <View style={styles.inputsContainer}>
                         <View style={styles.inputWrapper}>
-                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"} value={DataFormatter(price, "rounded")}
+                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"}
+                                       value={DataFormatter(price, "rounded")}
                                        setValue={setPrice} error={error} badge={"$/L"}/>
                         </View>
                         <View style={styles.inputWrapper}>
@@ -148,14 +157,16 @@ export default function NewCost() {
                                        setValue={setFuelAmount} error={error} badge={"L"}/>
                         </View>
                     </View>
-                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"} value={DataFormatter(totalCost, "rounded")}
+                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"}
+                               value={DataFormatter(totalCost, "rounded")}
                                setValue={setTotalCost} error={error} badge={"$"}/>
-                    <select style={styles.select} onChange={(e) => setFuelType(e.target.value)}>
-                        <option value={"PB95"}>PB95</option>
-                        <option value={"PB98"}>PB98</option>
-                        <option value={"ON"}>ON</option>
-                        <option value={"LPG"}>LPG</option>
-                    </select>
+                    <CustomSelect
+                        value={fuelType}
+                        onChange={setFuelType}
+                        options={fuelOptions}
+                        placeholder="Select fuel type"
+                        title="Select Fuel Type"
+                    />
                     <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
                                value={mileage} setValue={setMileage} error={error} badge={"km"}
                                errorType={(selectedCar?.mileage && mileage && mileage < selectedCar?.mileage) ? "mileage" : "required"}/>

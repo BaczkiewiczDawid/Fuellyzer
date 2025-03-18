@@ -6,18 +6,17 @@ import {
     TextInput,
     KeyboardTypeOptions
 } from 'react-native';
-import {Format} from "@/helpers/data-formatter";
 
 type Props = {
     title: string,
     placeholder: string
-    type: "string" | "number" | "email" | "password"
+    type: "string" | "number" | "email" | "password" | "date"
     value: string | number | undefined
     setValue: (val: any) => void
     error: boolean,
     badge?: "$" | "km" | "L" | "L/100km" | "$/L"
     step?: "string"
-    errorType?: "required" | "mileage"
+    errorType?: "required" | "mileage" | "invalid-format"
 }
 
 export const FormInput = ({title, placeholder, type, value, setValue, error, badge, errorType}: Props) => {
@@ -38,6 +37,9 @@ export const FormInput = ({title, placeholder, type, value, setValue, error, bad
             break
         case "required":
             errorMessage = "This field is required"
+            break
+        case "invalid-format":
+            errorMessage = "Please correct format to dd-mm-yyyy"
             break
         default:
             errorMessage = "This field is required"

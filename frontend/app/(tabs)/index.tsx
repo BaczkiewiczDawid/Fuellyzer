@@ -22,7 +22,7 @@ export default function HomeScreen() {
     return (
         <Wrapper>
             <View style={styles.headerWrapper}>
-                <SelectedCar />
+                <SelectedCar/>
                 <View style={styles.imageContainer}>
                     <Image style={styles.image} source={carImage}/>
                 </View>
@@ -46,7 +46,7 @@ export default function HomeScreen() {
                 disableIntervalMomentum={true}
             />
             <HeaderNavigation activeHeader={activeHeader} setActiveHeader={setActiveHeader}/>
-            <HistoryView />
+            <HistoryView/>
         </Wrapper>
     );
 }

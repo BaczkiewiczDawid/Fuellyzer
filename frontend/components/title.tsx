@@ -1,8 +1,8 @@
 import {StyleSheet, Text} from "react-native";
 
-export const Title = ({children}: { children: React.ReactNode }) => {
+export const Title = ({children, centered}: { children: React.ReactNode, centered?: boolean }) => {
     return (
-        <Text style={styles.title}>{children}</Text>
+        <Text style={[styles.title, centered && styles.centerd]}>{children}</Text>
     )
 }
 
@@ -14,5 +14,8 @@ const styles = StyleSheet.create({
         color: "#101D1E",
         flexWrap: 'wrap',
         width: "100%",
+    },
+    centerd: {
+        textAlign: "center",
     }
 })

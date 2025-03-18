@@ -1,29 +1,50 @@
 import {StyleSheet, View} from "react-native";
 import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
-import {Select} from "@/components/select";
 import {useState} from "react";
 import {Button} from "@/components/button";
 import FormInput from "@/components/form-input";
 import {useApi} from "@/hooks/useApi";
 import {router} from "expo-router";
+import CustomSelect from "@/components/customSelect";
 
-const carBrands = ["Audi", "BMW", "Volkswagen"];
+const carBrands = [
+    {label: "Audi", value: "Audi"},
+    {label: "BMW", value: "BMW"},
+    {label: "Volkswagen", value: "Volkswagen"},
+];
 const carModels = [{
     brand: "Audi",
-    models: ["A3", "A4", "A5"]
+    models: [
+        {label: "A3", value: "A3"},
+        {label: "A4", value: "A4"},
+        {label: "A6", value: "A6"},
+    ]
 }, {
     brand: "BMW",
-    models: ["3", "5", "7"]
+    models: [
+        {label: "3 Series", value: "3 Series"},
+        {label: "5 Series", value: "5 Series"},
+        {label: "7 Series", value: "7 Series"},
+    ]
 }, {
     brand: "Volkswagen",
-    models: ["Golf", "Passat", "Tiguan"]
+    models: [
+        {label: "Golf", value: "Golf"},
+        {label: "Passat", value: "Passat"},
+        {label: "Tiguan", value: "Tiguan"},
+    ]
 }];
+
+const years = Array.from({length: 30}, (_, i) => i + 1990).map(year => ({
+    label: year.toString(),
+    value: year.toString(),
+}));
 
 export default function NewCar() {
     const [selectedBrand, setSelectedBrand] = useState("Audi");
     const [selectedModel, setSelectedModel] = useState("A3");
-    const [selectedYear, setSelectedYear] = useState(undefined);
+    const [selectedYear, setSelectedYear] = useState<string | undefined>(undefined);
     const [mileage, setMileage] = useState(undefined);
     const [insurance, setInsurance] = useState<string | undefined>(undefined);
     const [oilChange, setOilChange] = useState(10000);
@@ -57,10 +78,11 @@ export default function NewCar() {
         }>
             <Title>Add new car</Title>
             <View style={styles.form}>
-                <Select options={carBrands} value={selectedBrand} setValue={setSelectedBrand}/>
-                <Select options={carModels.filter((car) => car.brand === selectedBrand)[0].models} value={selectedModel}
-                        setValue={setSelectedModel}/>
-                <Select options={["2010", "2011", "2012"]} value={selectedYear} setValue={setSelectedYear}/>
+                <CustomSelect value={selectedBrand} onChange={setSelectedBrand} options={carBrands}/>
+                <CustomSelect value={selectedModel} onChange={setSelectedModel}
+                              options={carModels.find(car => car.brand === selectedBrand)?.models || []}/>
+                <CustomSelect value={selectedYear} onChange={(val) => setSelectedYear(val)}
+                              options={years}/>
                 <FormInput title={"Mileage"} placeholder={"Mileage..."} type={"number"} value={mileage}
                            setValue={setMileage} error={false} badge={'km'}/>
                 <FormInput title={"Insurance"} placeholder={"dd-mm-yyyy"} type={"date"}

@@ -16,7 +16,7 @@ type Props = {
     error: boolean,
     badge?: "$" | "km" | "L" | "L/100km" | "$/L"
     step?: "string"
-    errorType?: "required" | "mileage"
+    errorType?: "required" | "mileage" | "invalid-format"
 }
 
 export const FormInput = ({title, placeholder, type, value, setValue, error, badge, errorType}: Props) => {
@@ -37,6 +37,9 @@ export const FormInput = ({title, placeholder, type, value, setValue, error, bad
             break
         case "required":
             errorMessage = "This field is required"
+            break
+        case "invalid-format":
+            errorMessage = "Please correct format to dd-mm-yyyy"
             break
         default:
             errorMessage = "This field is required"

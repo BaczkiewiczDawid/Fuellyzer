@@ -1,19 +1,19 @@
 import express from "express";
 import {db} from "../db";
-import {costsData, userCarsList} from "../db/schema";
-import {eq, and} from "drizzle-orm";
+import {userCarsList} from "../db/schema";
+import {and, eq} from "drizzle-orm";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
     try {
         const data = req.body;
-
+        1
         const response = await db.insert(userCarsList).values({
             email: data.email,
             carBrand: data.carBrand,
             carName: data.carName,
-            mileage: data.miles,
+            mileage: data.mileage,
             defaultSelected: false,
             mileageMeasure: "kilometers",
             oilChange: data.oilChange,

@@ -1,4 +1,4 @@
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {Image, Modal, Pressable, StyleSheet, View, Text} from 'react-native';
 import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
 import {Description} from "@/components/description";
@@ -70,14 +70,28 @@ export default function Cars() {
                 </View>
             ))}
             {showConfirmationModal && (
-                <View>
-                    <Title>Are you sure you want to delete this car?</Title>
-                    <Button onPress={() => setShowConfirmationModal(false)} text={"Cancel"}/>
-                    <Button onPress={() => {
-                        handleDelete(selectedCar.carBrand, selectedCar.carName)
-                        setShowConfirmationModal(false)
-                    }} text={"Delete"}/>
-                </View>
+                <Modal
+                    visible={showConfirmationModal}
+                    transparent={true}
+                    animationType="none"
+                    onRequestClose={() => setShowConfirmationModal(false)}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalTitle}>Are you sure you want to delete this car?</Text>
+                            <View style={styles.buttonContainer}>
+                                <Button onPress={() => setShowConfirmationModal(false)} text="Cancel" />
+                                <Button
+                                    onPress={() => {
+                                        handleDelete(selectedCar.carBrand, selectedCar.carName);
+                                        setShowConfirmationModal(false);
+                                    }}
+                                    text="Delete"
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             )}
         </Wrapper>
     );
@@ -117,6 +131,39 @@ const styles = StyleSheet.create({
                 color: "#fafafa",
                 textAlign:
                     "center",
+            },
+            centeredView: {
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)'
+            },
+            modalView: {
+                margin: 20,
+                backgroundColor: 'white',
+                borderRadius: 10,
+                padding: 25,
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {
+                    width: 0,
+                    height: 2
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5
+            },
+            modalTitle: {
+                marginBottom: 15,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: 18
+            },
+            buttonContainer: {
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginTop: 15
             }
         }
     )

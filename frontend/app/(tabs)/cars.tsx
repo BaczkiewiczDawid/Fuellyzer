@@ -11,6 +11,8 @@ import {Button} from "@/components/button";
 export default function Cars() {
     const [userCarsList, setUserCarsList] = useState<Car[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [selectedCar, setSelectedCar] = useState<any>(undefined);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,11 +58,27 @@ export default function Cars() {
                         <Title>{car.carBrand} {car.carName}</Title>
                         <Description>{car.mileage} km</Description>
                     </View>
-                    <Pressable onPress={() => handleDelete(car.carBrand, car.carName)}>
+                    <Pressable onPress={() => {
+                        setShowConfirmationModal(true)
+                        setSelectedCar({
+                            carBrand: car.carBrand,
+                            carName: car.carName
+                        })
+                    }}>
                         <Image style={styles.icon} source={deleteIcon}/>
                     </Pressable>
                 </View>
             ))}
+            {showConfirmationModal && (
+                <View>
+                    <Title>Are you sure you want to delete this car?</Title>
+                    <Button onPress={() => setShowConfirmationModal(false)} text={"Cancel"}/>
+                    <Button onPress={() => {
+                        handleDelete(selectedCar.carBrand, selectedCar.carName)
+                        setShowConfirmationModal(false)
+                    }} text={"Delete"}/>
+                </View>
+            )}
         </Wrapper>
     );
 }

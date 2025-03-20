@@ -1,4 +1,4 @@
-import {Image, Modal, Pressable, StyleSheet, View, Text} from 'react-native';
+import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import {Wrapper} from "@/components/wrapper";
 import {Title} from "@/components/title";
 import {Description} from "@/components/description";
@@ -80,7 +80,7 @@ export default function Cars() {
                         <View style={styles.modalView}>
                             <Text style={styles.modalTitle}>Are you sure you want to delete this car?</Text>
                             <View style={styles.buttonContainer}>
-                                <Button onPress={() => setShowConfirmationModal(false)} text="Cancel" />
+                                <Button onPress={() => setShowConfirmationModal(false)} text="Cancel"/>
                                 <Button
                                     onPress={() => {
                                         handleDelete(selectedCar.carBrand, selectedCar.carName);

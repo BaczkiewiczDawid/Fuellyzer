@@ -28,6 +28,7 @@ export default function NewCost() {
         carName: string,
         mileage?: number
     } | undefined>(undefined)
+    const [partName, setPartName] = useState<string | undefined>(undefined)
 
     const mainColor = '#1E88E5'
     const trackColor = '#BBDEFB'
@@ -144,41 +145,51 @@ export default function NewCost() {
                         </TouchableOpacity>
                     ))}
                 </View>
-                <View style={styles.form}>
-                    <View style={styles.inputsContainer}>
-                        <View style={styles.inputWrapper}>
-                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"}
-                                       value={DataFormatter(price, "rounded")}
-                                       setValue={setPrice} error={error} badge={"$/L"}/>
+                {activeView === "Refuel" && (
+                    <View style={styles.form}>
+                        <View style={styles.inputsContainer}>
+                            <View style={styles.inputWrapper}>
+                                <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"}
+                                           value={DataFormatter(price, "rounded")}
+                                           setValue={setPrice} error={error} badge={"$/L"}/>
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <FormInput title={"Liters Fueled"} placeholder={"Liters Fueled..."} type={"number"}
+                                           value={DataFormatter(fuelAmount, "rounded")}
+                                           setValue={setFuelAmount} error={error} badge={"L"}/>
+                            </View>
                         </View>
-                        <View style={styles.inputWrapper}>
-                            <FormInput title={"Liters Fueled"} placeholder={"Liters Fueled..."} type={"number"}
-                                       value={DataFormatter(fuelAmount, "rounded")}
-                                       setValue={setFuelAmount} error={error} badge={"L"}/>
-                        </View>
-                    </View>
-                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"}
-                               value={DataFormatter(totalCost, "rounded")}
-                               setValue={setTotalCost} error={error} badge={"$"}/>
-                    <CustomSelect
-                        value={fuelType}
-                        onChange={setFuelType}
-                        options={fuelOptions}
-                        placeholder="Select fuel type"
-                        title="Select Fuel Type"
-                    />
-                    <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
-                               value={mileage} setValue={setMileage} error={error} badge={"km"}
-                               errorType={(selectedCar?.mileage && mileage && mileage < selectedCar?.mileage) ? "mileage" : "required"}/>
-                    <View style={styles.inputsContainer}>
-                        <Text style={styles.labelText}>Full refuel</Text>
-                        <Switch value={fullRefuel} onValueChange={() => setFullRefuel(!fullRefuel)}
-                                trackColor={{false: '#D8D8D8', true: trackColor}}
-                                thumbColor={fullRefuel ? mainColor : '#F4F3F4'}
-                                ios_backgroundColor="#3e3e3e"
+                        <FormInput title={"Total price"} placeholder={"Total price"} type={"number"}
+                                   value={DataFormatter(totalCost, "rounded")}
+                                   setValue={setTotalCost} error={error} badge={"$"}/>
+                        <CustomSelect
+                            value={fuelType}
+                            onChange={setFuelType}
+                            options={fuelOptions}
+                            placeholder="Select fuel type"
+                            title="Select Fuel Type"
                         />
+                        <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
+                                   value={mileage} setValue={setMileage} error={error} badge={"km"}
+                                   errorType={(selectedCar?.mileage && mileage && mileage < selectedCar?.mileage) ? "mileage" : "required"}/>
+                        <View style={styles.inputsContainer}>
+                            <Text style={styles.labelText}>Full refuel</Text>
+                            <Switch value={fullRefuel} onValueChange={() => setFullRefuel(!fullRefuel)}
+                                    trackColor={{false: '#D8D8D8', true: trackColor}}
+                                    thumbColor={fullRefuel ? mainColor : '#F4F3F4'}
+                                    ios_backgroundColor="#3e3e3e"
+                            />
+                        </View>
                     </View>
-                </View>
+                )}
+                {activeView === "Maintance" && (
+                    <View style={styles.form}>
+                        <FormInput title={"Part name"} placeholder={"Part name..."} type={"string"} value={partName}
+                                   setValue={setPartName} error={false}/>
+                        <FormInput title={"Price"} placeholder={"Price..."} type={"number"} value={price}
+                                   setValue={setPrice} error={false}/>
+                    </View>
+                )}
                 <View style={styles.summaryWrapper}>
                     <Text>Summary</Text>
                     <View style={styles.summaryRow}>

@@ -105,6 +105,8 @@ export default function NewCost() {
         setTotalCost(price && fuelAmount ? price * fuelAmount : undefined)
     }, [price, fuelAmount])
 
+    console.log(activeView)
+
     return (
         <Wrapper>
             <Title>New cost</Title>
@@ -182,7 +184,7 @@ export default function NewCost() {
                         </View>
                     </View>
                 )}
-                {activeView === "Maintance" && (
+                {(activeView === "Maintance" || activeView === "Tuning") && (
                     <View style={styles.form}>
                         <FormInput title={"Part name"} placeholder={"Part name..."} type={"string"} value={partName}
                                    setValue={setPartName} error={false}/>

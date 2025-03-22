@@ -102,10 +102,14 @@ export default function NewCost() {
     }
 
     useEffect(() => {
-        setTotalCost(price && fuelAmount ? price * fuelAmount : undefined)
+        if (price && fuelAmount) {
+            setTotalCost(price * fuelAmount)
+        } else if (price && !fuelAmount) {
+            setTotalCost(price)
+        } else {
+            setTotalCost(undefined)
+        }
     }, [price, fuelAmount])
-
-    console.log(activeView)
 
     return (
         <Wrapper>
@@ -189,19 +193,23 @@ export default function NewCost() {
                         <FormInput title={"Part name"} placeholder={"Part name..."} type={"string"} value={partName}
                                    setValue={setPartName} error={false}/>
                         <FormInput title={"Price"} placeholder={"Price..."} type={"number"} value={price}
-                                   setValue={setPrice} error={false}/>
+                                   setValue={setPrice} error={false} badge={"$"}/>
                     </View>
                 )}
                 <View style={styles.summaryWrapper}>
-                    <Text>Summary</Text>
-                    <View style={styles.summaryRow}>
-                        <Text>Fuel amount</Text>
-                        <Text>{fuelAmount}</Text>
-                    </View>
-                    <View style={styles.summaryRow}>
-                        <Text>Price per Liter</Text>
-                        <Text>{DataFormatter(price, "moneyRounded")}</Text>
-                    </View>
+                    {activeView === "Refuel" && (
+                        <View>
+                            <Text>Summary</Text>
+                            <View style={styles.summaryRow}>
+                                <Text>Fuel amount</Text>
+                                <Text>{fuelAmount}</Text>
+                            </View>
+                            <View style={styles.summaryRow}>
+                                <Text>Price per Liter</Text>
+                                <Text>{DataFormatter(price, "moneyRounded")}</Text>
+                            </View>
+                        </View>
+                    )}
                     <View style={[styles.summaryRow, styles.lastRow]}>
                         <Text style={styles.textBold}>Total</Text>
                         <Text style={styles.textBold}>{DataFormatter(totalCost, "moneyRounded")}</Text>

@@ -18,7 +18,6 @@ export default function NewCost() {
     const [availableCars, setAvailableCars] = useState<Car[]>([])
     const [mileage, setMileage] = useState<number | undefined>(undefined)
     const [fuelAmount, setFuelAmount] = useState<number | undefined>(undefined)
-    const [fuelType, setFuelType] = useState<string>("PB95")
     const [price, setPrice] = useState<number | undefined>(undefined)
     const [totalCost, setTotalCost] = useState<number | undefined>(undefined)
     const [fullRefuel, setFullRefuel] = useState<boolean>(true)
@@ -114,7 +113,6 @@ export default function NewCost() {
         const response = await useApi("http://localhost:4000/new-expense", "POST", data)
 
         if (response) {
-            router.push("/")
             setMileage(undefined)
             setTotalCost(undefined)
             setPrice(undefined)
@@ -122,6 +120,8 @@ export default function NewCost() {
             setDetails(undefined)
             setPartName(undefined)
             setActiveView("Refuel")
+            setError(false)
+            router.push("/")
         }
     }
 

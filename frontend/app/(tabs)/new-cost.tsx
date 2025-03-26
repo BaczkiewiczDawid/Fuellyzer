@@ -18,7 +18,6 @@ export default function NewCost() {
     const [availableCars, setAvailableCars] = useState<Car[]>([])
     const [mileage, setMileage] = useState<number | undefined>(undefined)
     const [fuelAmount, setFuelAmount] = useState<number | undefined>(undefined)
-    const [fuelType, setFuelType] = useState<string>("PB95")
     const [price, setPrice] = useState<number | undefined>(undefined)
     const [totalCost, setTotalCost] = useState<number | undefined>(undefined)
     const [fullRefuel, setFullRefuel] = useState<boolean>(true)
@@ -28,6 +27,8 @@ export default function NewCost() {
         carName: string,
         mileage?: number
     } | undefined>(undefined)
+    const [partName, setPartName] = useState<string | undefined>(undefined)
+    const [details, setDetails] = useState<string | undefined>(undefined)
 
     const mainColor = '#1E88E5'
     const trackColor = '#BBDEFB'
@@ -67,41 +68,71 @@ export default function NewCost() {
     }, [defaultSelectedCar]);
 
     const handleNewCost = async () => {
-        if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {
-            setError(true)
-            return
+        let data = {}
+
+        if (activeView === "Refuel") {
+            if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {
+                setError(true)
+                return
+            }
+
+            if (selectedCar.mileage && mileage && mileage < selectedCar?.mileage) {
+                setError(true)
+                return
+            }
+
+            data = {
+                carBrand: selectedCar.carBrand,
+                carName: selectedCar.carName,
+                mileage,
+                fuelAmount,
+                details,
+                price,
+                totalCost,
+                email: "baczkiewicz.dawid22@gmail.com",
+                type: activeView,
+                date: new Date().toISOString().split("T")[0],
+                fullRefuel,
+            }
+        } else {
+            if (selectedCar) {
+                data = {
+                    carBrand: selectedCar.carBrand,
+                    carName: selectedCar.carName,
+                    totalCost,
+                    email: "baczkiewicz.dawid22@gmail.com",
+                    type: activeView,
+                    date: new Date().toISOString().split("T")[0],
+                    partName,
+                    details,
+                }
+
+            }
         }
 
-        if (selectedCar.mileage && mileage < selectedCar?.mileage) {
-            setError(true)
-            return
-        }
-
-        const response = await useApi("http://localhost:4000/new-expense", "POST", {
-            carBrand: selectedCar.carBrand,
-            carName: selectedCar.carName,
-            mileage,
-            fuelAmount,
-            fuelType,
-            price,
-            totalCost,
-            email: "baczkiewicz.dawid22@gmail.com",
-            type: activeView,
-            date: new Date().toISOString().split("T")[0],
-            fullRefuel,
-        })
+        const response = await useApi("http://localhost:4000/new-expense", "POST", data)
 
         if (response) {
-            router.push("/")
             setMileage(undefined)
             setTotalCost(undefined)
             setPrice(undefined)
             setFuelAmount(undefined)
+            setDetails(undefined)
+            setPartName(undefined)
+            setActiveView("Refuel")
+            setError(false)
+            router.push("/")
         }
     }
 
     useEffect(() => {
-        setTotalCost(price && fuelAmount ? price * fuelAmount : undefined)
+        if (price && fuelAmount) {
+            setTotalCost(price * fuelAmount)
+        } else if (price && !fuelAmount) {
+            setTotalCost(price)
+        } else {
+            setTotalCost(undefined)
+        }
     }, [price, fuelAmount])
 
     return (
@@ -144,51 +175,67 @@ export default function NewCost() {
                         </TouchableOpacity>
                     ))}
                 </View>
-                <View style={styles.form}>
-                    <View style={styles.inputsContainer}>
-                        <View style={styles.inputWrapper}>
-                            <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"}
-                                       value={DataFormatter(price, "rounded")}
-                                       setValue={setPrice} error={error} badge={"$/L"}/>
+                {activeView === "Refuel" && (
+                    <View style={styles.form}>
+                        <View style={styles.inputsContainer}>
+                            <View style={styles.inputWrapper}>
+                                <FormInput title={"Fuel price"} placeholder={"Fuel price..."} type={"number"}
+                                           value={DataFormatter(price, "rounded")}
+                                           setValue={setPrice} error={error} badge={"$/L"}/>
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <FormInput title={"Liters Fueled"} placeholder={"Liters Fueled..."} type={"number"}
+                                           value={DataFormatter(fuelAmount, "rounded")}
+                                           setValue={setFuelAmount} error={error} badge={"L"}/>
+                            </View>
                         </View>
-                        <View style={styles.inputWrapper}>
-                            <FormInput title={"Liters Fueled"} placeholder={"Liters Fueled..."} type={"number"}
-                                       value={DataFormatter(fuelAmount, "rounded")}
-                                       setValue={setFuelAmount} error={error} badge={"L"}/>
-                        </View>
-                    </View>
-                    <FormInput title={"Total price"} placeholder={"Total price"} type={"number"}
-                               value={DataFormatter(totalCost, "rounded")}
-                               setValue={setTotalCost} error={error} badge={"$"}/>
-                    <CustomSelect
-                        value={fuelType}
-                        onChange={setFuelType}
-                        options={fuelOptions}
-                        placeholder="Select fuel type"
-                        title="Select Fuel Type"
-                    />
-                    <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
-                               value={mileage} setValue={setMileage} error={error} badge={"km"}
-                               errorType={(selectedCar?.mileage && mileage && mileage < selectedCar?.mileage) ? "mileage" : "required"}/>
-                    <View style={styles.inputsContainer}>
-                        <Text style={styles.labelText}>Full refuel</Text>
-                        <Switch value={fullRefuel} onValueChange={() => setFullRefuel(!fullRefuel)}
-                                trackColor={{false: '#D8D8D8', true: trackColor}}
-                                thumbColor={fullRefuel ? mainColor : '#F4F3F4'}
-                                ios_backgroundColor="#3e3e3e"
+                        <FormInput title={"Total price"} placeholder={"Total price"} type={"number"}
+                                   value={DataFormatter(totalCost, "rounded")}
+                                   setValue={setTotalCost} error={error} badge={"$"}/>
+                        <CustomSelect
+                            value={details}
+                            onChange={setDetails}
+                            options={fuelOptions}
+                            placeholder="Select fuel type"
+                            title="Select Fuel Type"
                         />
+                        <FormInput title={"Odometer Reading"} placeholder={"Odometer Reading..."} type={"number"}
+                                   value={mileage} setValue={setMileage} error={error} badge={"km"}
+                                   errorType={(selectedCar?.mileage && mileage && mileage < selectedCar?.mileage) ? "mileage" : "required"}/>
+                        <View style={styles.inputsContainer}>
+                            <Text style={styles.labelText}>Full refuel</Text>
+                            <Switch value={fullRefuel} onValueChange={() => setFullRefuel(!fullRefuel)}
+                                    trackColor={{false: '#D8D8D8', true: trackColor}}
+                                    thumbColor={fullRefuel ? mainColor : '#F4F3F4'}
+                                    ios_backgroundColor="#3e3e3e"
+                            />
+                        </View>
                     </View>
-                </View>
+                )}
+                {(activeView === "Maintance" || activeView === "Tuning") && (
+                    <View style={styles.form}>
+                        <FormInput title={"Part name"} placeholder={"Part name..."} type={"string"} value={partName}
+                                   setValue={setPartName} error={false}/>
+                        <FormInput title={"Details"} placeholder={"Details"} type={"string"} value={details}
+                                   setValue={setDetails} error={false}/>
+                        <FormInput title={"Price"} placeholder={"Price..."} type={"number"} value={price}
+                                   setValue={setPrice} error={false} badge={"$"}/>
+                    </View>
+                )}
                 <View style={styles.summaryWrapper}>
-                    <Text>Summary</Text>
-                    <View style={styles.summaryRow}>
-                        <Text>Fuel amount</Text>
-                        <Text>{fuelAmount}</Text>
-                    </View>
-                    <View style={styles.summaryRow}>
-                        <Text>Price per Liter</Text>
-                        <Text>{DataFormatter(price, "moneyRounded")}</Text>
-                    </View>
+                    {activeView === "Refuel" && (
+                        <View>
+                            <Text>Summary</Text>
+                            <View style={styles.summaryRow}>
+                                <Text>Fuel amount</Text>
+                                <Text>{fuelAmount}</Text>
+                            </View>
+                            <View style={styles.summaryRow}>
+                                <Text>Price per Liter</Text>
+                                <Text>{DataFormatter(price, "moneyRounded")}</Text>
+                            </View>
+                        </View>
+                    )}
                     <View style={[styles.summaryRow, styles.lastRow]}>
                         <Text style={styles.textBold}>Total</Text>
                         <Text style={styles.textBold}>{DataFormatter(totalCost, "moneyRounded")}</Text>

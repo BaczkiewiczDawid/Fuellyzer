@@ -1,7 +1,7 @@
 import express from "express";
 import {db} from "../db";
 import {costsData, userCarsList} from "../db/schema";
-import {eq, and} from "drizzle-orm";
+import {and, eq} from "drizzle-orm";
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
 
         const response = await db.insert(costsData).values({
             type: data.type,
-            details: data.fuelType,
+            details: data.details,
             currency: "USD",
             total: data.totalCost,
             date: data.date,
@@ -22,17 +22,19 @@ router.post("/", async (req, res) => {
         });
 
         if (response) {
-            await db.update(userCarsList)
-                .set({
-                    mileage: data.mileage,
-                })
-                .where(
-                    and(
-                        eq(userCarsList.email, data.email),
-                        eq(userCarsList.carBrand, data.carBrand),
-                        eq(userCarsList.carName, data.carName)
-                    )
-                );
+            if (data.activeView === "Refuel") {
+                await db.update(userCarsList)
+                    .set({
+                        mileage: data.mileage,
+                    })
+                    .where(
+                        and(
+                            eq(userCarsList.email, data.email),
+                            eq(userCarsList.carBrand, data.carBrand),
+                            eq(userCarsList.carName, data.carName)
+                        )
+                    );
+            }
         }
 
         res.send(response);

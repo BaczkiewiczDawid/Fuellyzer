@@ -29,6 +29,7 @@ export default function NewCost() {
         mileage?: number
     } | undefined>(undefined)
     const [partName, setPartName] = useState<string | undefined>(undefined)
+    const [details, setDetails] = useState<string | undefined>(undefined)
 
     const mainColor = '#1E88E5'
     const trackColor = '#BBDEFB'
@@ -68,29 +69,49 @@ export default function NewCost() {
     }, [defaultSelectedCar]);
 
     const handleNewCost = async () => {
-        if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {
-            setError(true)
-            return
+        let data = {}
+
+        if (activeView === "Refuel") {
+            if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {
+                setError(true)
+                return
+            }
+
+            if (selectedCar.mileage && mileage && mileage < selectedCar?.mileage) {
+                setError(true)
+                return
+            }
+
+            data = {
+                carBrand: selectedCar.carBrand,
+                carName: selectedCar.carName,
+                mileage,
+                fuelAmount,
+                details,
+                price,
+                totalCost,
+                email: "baczkiewicz.dawid22@gmail.com",
+                type: activeView,
+                date: new Date().toISOString().split("T")[0],
+                fullRefuel,
+            }
+        } else {
+            if (selectedCar) {
+                data = {
+                    carBrand: selectedCar.carBrand,
+                    carName: selectedCar.carName,
+                    totalCost,
+                    email: "baczkiewicz.dawid22@gmail.com",
+                    type: activeView,
+                    date: new Date().toISOString().split("T")[0],
+                    partName,
+                    details,
+                }
+
+            }
         }
 
-        if (selectedCar.mileage && mileage < selectedCar?.mileage) {
-            setError(true)
-            return
-        }
-
-        const response = await useApi("http://localhost:4000/new-expense", "POST", {
-            carBrand: selectedCar.carBrand,
-            carName: selectedCar.carName,
-            mileage,
-            fuelAmount,
-            fuelType,
-            price,
-            totalCost,
-            email: "baczkiewicz.dawid22@gmail.com",
-            type: activeView,
-            date: new Date().toISOString().split("T")[0],
-            fullRefuel,
-        })
+        const response = await useApi("http://localhost:4000/new-expense", "POST", data)
 
         if (response) {
             router.push("/")
@@ -98,6 +119,9 @@ export default function NewCost() {
             setTotalCost(undefined)
             setPrice(undefined)
             setFuelAmount(undefined)
+            setDetails(undefined)
+            setPartName(undefined)
+            setActiveView("Refuel")
         }
     }
 
@@ -169,8 +193,8 @@ export default function NewCost() {
                                    value={DataFormatter(totalCost, "rounded")}
                                    setValue={setTotalCost} error={error} badge={"$"}/>
                         <CustomSelect
-                            value={fuelType}
-                            onChange={setFuelType}
+                            value={details}
+                            onChange={setDetails}
                             options={fuelOptions}
                             placeholder="Select fuel type"
                             title="Select Fuel Type"
@@ -192,6 +216,8 @@ export default function NewCost() {
                     <View style={styles.form}>
                         <FormInput title={"Part name"} placeholder={"Part name..."} type={"string"} value={partName}
                                    setValue={setPartName} error={false}/>
+                        <FormInput title={"Details"} placeholder={"Details"} type={"string"} value={details}
+                                   setValue={setDetails} error={false}/>
                         <FormInput title={"Price"} placeholder={"Price..."} type={"number"} value={price}
                                    setValue={setPrice} error={false} badge={"$"}/>
                     </View>

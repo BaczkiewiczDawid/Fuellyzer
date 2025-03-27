@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet} from "react-native";
+import {Pressable, StyleSheet, Text, View} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
 import {DataFormatter} from "@/helpers/data-formatter";
 
@@ -9,6 +9,14 @@ type Props = {
 export const HistoryItem = ({item}: Props) => {
     const day = String(new Date(item.date).getDate()).padStart(2, '0');
     const month = new Date(item.date).toLocaleString('en-US', {month: 'short'});
+
+    const handleDelete = () => {
+        console.log("Delete")
+    }
+
+    const handleEdit = () => {
+        console.log("Edit")
+    }
 
     return (
         <View style={styles.itemContainer}>
@@ -23,6 +31,8 @@ export const HistoryItem = ({item}: Props) => {
                 </View>
             </View>
             <Text style={styles.total}>{DataFormatter(item.total, "moneyRounded")}</Text>
+            <Pressable onPress={handleDelete}><Text>E</Text></Pressable>
+            <Pressable onPress={handleDelete}><Text>D</Text></Pressable>
         </View>
     )
 }

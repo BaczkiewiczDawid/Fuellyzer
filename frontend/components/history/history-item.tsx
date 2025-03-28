@@ -2,19 +2,18 @@ import {Pressable, StyleSheet, Text, View} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
 import {DataFormatter} from "@/helpers/data-formatter";
 import { Swipeable } from 'react-native-gesture-handler';
-import {useApi} from "@/hooks/useApi";
 
 type Props = {
     item: HistoryItemType
+    onDelete: (item: HistoryItemType) => void;
 }
 
-export const HistoryItem = ({item}: Props) => {
+export const HistoryItem = ({item, onDelete}: Props) => {
     const day = String(new Date(item.date).getDate()).padStart(2, '0');
     const month = new Date(item.date).toLocaleString('en-US', {month: 'short'});
 
     const handleDelete = () => {
-        console.log("Delete", item)
-        useApi("http://localhost:4000/history", "DELETE", item)
+        onDelete(item)
     }
 
     const handleEdit = () => {

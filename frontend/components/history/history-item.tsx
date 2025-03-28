@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, Text, View} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
 import {DataFormatter} from "@/helpers/data-formatter";
 import { Swipeable } from 'react-native-gesture-handler';
+import {useApi} from "@/hooks/useApi";
 
 type Props = {
     item: HistoryItemType
@@ -13,6 +14,7 @@ export const HistoryItem = ({item}: Props) => {
 
     const handleDelete = () => {
         console.log("Delete", item)
+        useApi("http://localhost:4000/history", "DELETE", item)
     }
 
     const handleEdit = () => {

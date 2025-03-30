@@ -1,30 +1,86 @@
-import {Text, View, StyleSheet} from "react-native";
+import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
 import {DataFormatter} from "@/helpers/data-formatter";
+import {Swipeable} from 'react-native-gesture-handler';
+import {useState} from "react";
+import FormInput from "@/components/form-input";
+import CustomSelect from "@/components/customSelect";
+import CheckIcon from "@/assets/images/check.png"
 
 type Props = {
     item: HistoryItemType
+    onDelete: (item: HistoryItemType) => void;
+    onEdit: (item: HistoryItemType) => void;
 }
 
-export const HistoryItem = ({item}: Props) => {
+export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
     const day = String(new Date(item.date).getDate()).padStart(2, '0');
     const month = new Date(item.date).toLocaleString('en-US', {month: 'short'});
+    const [isOpen, setIsOpen] = useState(false);
+    const [totalValue, setTotalValue] = useState(item.total);
+    const [typeValue, setTypeValue] = useState(item.type);
+
+    const handleDelete = () => {
+        onDelete(item)
+    }
+
+    if (isOpen) {
+        return (
+            <View style={styles.editContainer}>
+                <View style={styles.inputsWrapper}>
+                    <CustomSelect onChange={setTypeValue} value={typeValue} options={[
+                        {label: "Refuel", value: "Refuel"},
+                        {label: "Maintenance", value: "Maintenance"},
+                        {label: "Tuning", value: "Tuning"},
+                    ]}/>
+                    <FormInput title={"Price"} placeholder={String(item.total)} type={"number"} value={totalValue}
+                               setValue={setTotalValue} error={false} badge={"$"} hideLabel style={styles.editInput}/>
+                </View>
+                <Pressable onPress={() => {
+                    setIsOpen(false);
+                    item = {...item, total: totalValue, type: typeValue}
+                    onEdit(item)
+                }}><Image style={styles.icon} source={CheckIcon}/></Pressable>
+            </View>
+        )
+    }
+
+    const renderRightActions = () => {
+        return (
+            <View style={styles.rightActions}>
+                <Pressable
+                    style={[styles.actionButton, styles.editButton]}
+                    onPress={() => setIsOpen(true)}
+                >
+                    <Text style={styles.actionText}>Edit</Text>
+                </Pressable>
+                <Pressable
+                    style={[styles.actionButton, styles.deleteButton]}
+                    onPress={handleDelete}
+                >
+                    <Text style={styles.actionText}>Delete</Text>
+                </Pressable>
+            </View>
+        );
+    };
 
     return (
-        <View style={styles.itemContainer}>
-            <View style={styles.details}>
-                <View style={styles.date}>
-                    <Text style={styles.datePrimary}>{day}</Text>
-                    <Text style={styles.dateSecondary}>{month}</Text>
+        <Swipeable renderRightActions={renderRightActions}>
+            <View style={styles.itemContainer}>
+                <View style={styles.details}>
+                    <View style={styles.date}>
+                        <Text style={styles.datePrimary}>{day}</Text>
+                        <Text style={styles.dateSecondary}>{month}</Text>
+                    </View>
+                    <View>
+                        <Text style={styles.detailsText}>{item.type}</Text>
+                        <Text style={styles.detailsTextSecondary}>{item.details}</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text style={styles.detailsText}>{item.type}</Text>
-                    <Text style={styles.detailsTextSecondary}>{item.details}</Text>
-                </View>
+                <Text style={styles.total}>{DataFormatter(Number(item.total), "moneyRounded")}</Text>
             </View>
-            <Text style={styles.total}>{DataFormatter(item.total, "moneyRounded")}</Text>
-        </View>
-    )
+        </Swipeable>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -35,6 +91,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderBottomWidth: 1,
         borderBottomColor: "#E5E5E5",
+        backgroundColor: 'white',
     },
     date: {
         flexDirection: 'column',
@@ -70,5 +127,52 @@ const styles = StyleSheet.create({
         color: "#AAAAAA",
         fontSize: 12,
         marginTop: 2
+    },
+    rightActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginRight: 10,
+    },
+    actionButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 70,
+        height: '100%',
+    },
+    editButton: {
+        backgroundColor: '#4F8EF7',
+    },
+    deleteButton: {
+        backgroundColor: '#FF3B30',
+    },
+    actionText: {
+        color: 'white',
+        fontWeight: 'bold',
+        padding: 10,
+    },
+    editContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-between",
+        borderBottomWidth: 1,
+        borderBottomColor: "#E5E5E5",
+        backgroundColor: 'white',
+        columnGap: 20,
+        marginTop: 20,
+    },
+    icon: {
+        width: 24,
+        height: 24,
+        marginBottom: 20,
+    },
+    editInput: {
+        width: 100,
+        flex: 0,
+    },
+    inputsWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        columnGap: 20,
     }
-})
+});

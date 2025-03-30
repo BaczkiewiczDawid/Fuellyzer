@@ -1,6 +1,6 @@
-import {View, StyleSheet} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {HistoryItem} from "@/components/history/history-item";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useApi} from "@/hooks/useApi";
 import {NoData} from "@/components/no-data";
 import {Loader} from "@/components/loader";
@@ -14,20 +14,50 @@ export const HistoryItems = ({activeView}: Props) => {
     const [data, setData] = useState<HistoryItemType[] | undefined>(undefined)
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true)
+    const fetchData = useCallback(async () => {
+        setIsLoading(true)
+        try {
             const response = await useApi("http://localhost:4000/history", "GET");
-
             setData(response)
+        } catch (error) {
+            console.error("Error fetching history data:", error)
+        } finally {
             setIsLoading(false)
         }
-
-        fetchData()
     }, [])
 
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
+
+    const handleDelete = async (item: HistoryItemType) => {
+        try {
+            setData(prevData => prevData?.filter(i => i.id !== item.id))
+
+            await useApi("http://localhost:4000/history", "DELETE", item)
+            fetchData()
+        } catch (error) {
+            console.error("Error deleting item:", error)
+        }
+    }
+
+    const handleEdit = async (item: HistoryItemType) => {
+        setData(prevData => prevData?.map(i => i.id === item.id ? item : i));
+
+        try {
+            await useApi("http://localhost:4000/history", "PUT", item)
+            fetchData()
+        } catch (error) {
+            console.error("Error editing item:", error)
+        }
+    }
+
+    if (isLoading) {
+        return <Loader/>
+    }
+
     if (!data) {
-        return <Loader />
+        return <Loader/>
     }
 
     const filteredHistoryItemsList: HistoryItemType[] = data.filter(item => item.type === activeView);
@@ -37,7 +67,7 @@ export const HistoryItems = ({activeView}: Props) => {
             {(activeView === "All" ? data : filteredHistoryItemsList).length === 0 && <NoData/>}
             {(activeView === "All" ? data : filteredHistoryItemsList).map((item, index) => {
                 return (
-                    <HistoryItem key={index} item={item}/>
+                    <HistoryItem key={index} item={item} onDelete={handleDelete} onEdit={handleEdit}/>
                 )
             })}
         </View>

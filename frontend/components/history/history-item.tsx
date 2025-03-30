@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View, Image} from "react-native";
+import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
 import {DataFormatter} from "@/helpers/data-formatter";
 import {Swipeable} from 'react-native-gesture-handler';
@@ -27,18 +27,20 @@ export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
     if (isOpen) {
         return (
             <View style={styles.editContainer}>
-                <CustomSelect onChange={setTypeValue} value={typeValue} options={[
-                    {label: "Refuel", value: "Refuel"},
-                    {label: "Maintenance", value: "Maintenance"},
-                    {label: "Tuning", value: "Tuning"},
-                ]}/>
-                <FormInput title={"Price"} placeholder={String(item.total)} type={"number"} value={totalValue}
-                           setValue={setTotalValue} error={false} badge={"$"} hideLabel style={styles.editInput}/>
+                <View style={styles.inputsWrapper}>
+                    <CustomSelect onChange={setTypeValue} value={typeValue} options={[
+                        {label: "Refuel", value: "Refuel"},
+                        {label: "Maintenance", value: "Maintenance"},
+                        {label: "Tuning", value: "Tuning"},
+                    ]}/>
+                    <FormInput title={"Price"} placeholder={String(item.total)} type={"number"} value={totalValue}
+                               setValue={setTotalValue} error={false} badge={"$"} hideLabel style={styles.editInput}/>
+                </View>
                 <Pressable onPress={() => {
                     setIsOpen(false);
                     item = {...item, total: totalValue, type: typeValue}
                     onEdit(item)
-                }}><Image style={styles.icon} source={CheckIcon} /></Pressable>
+                }}><Image style={styles.icon} source={CheckIcon}/></Pressable>
             </View>
         )
     }
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
     editContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: "space-between",
         borderBottomWidth: 1,
         borderBottomColor: "#E5E5E5",
         backgroundColor: 'white',
@@ -167,4 +170,9 @@ const styles = StyleSheet.create({
         width: 100,
         flex: 0,
     },
+    inputsWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        columnGap: 20,
+    }
 });

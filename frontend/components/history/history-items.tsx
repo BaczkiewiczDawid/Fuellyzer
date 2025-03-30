@@ -32,6 +32,8 @@ export const HistoryItems = ({activeView}: Props) => {
 
     const handleDelete = async (item: HistoryItemType) => {
         try {
+            setData(prevData => prevData?.filter(i => i.id !== item.id))
+
             await useApi("http://localhost:4000/history", "DELETE", item)
             fetchData()
         } catch (error) {

@@ -12,9 +12,21 @@ type Props = {
     step?: "string"
     errorType?: "required" | "mileage" | "invalid-format"
     hideLabel?: boolean
+    style?: object
 }
 
-export const FormInput = ({title, placeholder, type, value, setValue, error, badge, errorType, hideLabel}: Props) => {
+export const FormInput = ({
+                              title,
+                              placeholder,
+                              type,
+                              value,
+                              setValue,
+                              error,
+                              badge,
+                              errorType,
+                              hideLabel,
+                              style
+                          }: Props) => {
     let keyboardType: KeyboardTypeOptions = "default"
 
     if (type === "number") {
@@ -52,7 +64,7 @@ export const FormInput = ({title, placeholder, type, value, setValue, error, bad
             <View style={styles.inputWrapper}>
                 <TextInput
                     placeholder={placeholder}
-                    style={styles.input}
+                    style={[styles.input, style]}
                     keyboardType={keyboardType}
                     value={value?.toString()}
                     secureTextEntry={type === 'password'}

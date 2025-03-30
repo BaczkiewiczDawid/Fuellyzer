@@ -74,7 +74,7 @@ export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
                         <Text style={styles.detailsTextSecondary}>{item.details}</Text>
                     </View>
                 </View>
-                <Text style={styles.total}>{DataFormatter(item.total, "moneyRounded")}</Text>
+                <Text style={styles.total}>{DataFormatter(Number(item.total), "moneyRounded")}</Text>
             </View>
         </Swipeable>
     );

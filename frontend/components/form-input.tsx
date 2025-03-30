@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TextInput,
-    KeyboardTypeOptions
-} from 'react-native';
+import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View} from 'react-native';
 
 type Props = {
     title: string,
@@ -17,9 +11,10 @@ type Props = {
     badge?: "$" | "km" | "L" | "L/100km" | "$/L"
     step?: "string"
     errorType?: "required" | "mileage" | "invalid-format"
+    hideLabel?: boolean
 }
 
-export const FormInput = ({title, placeholder, type, value, setValue, error, badge, errorType}: Props) => {
+export const FormInput = ({title, placeholder, type, value, setValue, error, badge, errorType, hideLabel}: Props) => {
     let keyboardType: KeyboardTypeOptions = "default"
 
     if (type === "number") {
@@ -51,7 +46,9 @@ export const FormInput = ({title, placeholder, type, value, setValue, error, bad
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>{title}</Text>
+            {!hideLabel && (
+                <Text style={styles.label}>{title}</Text>
+            )}
             <View style={styles.inputWrapper}>
                 <TextInput
                     placeholder={placeholder}

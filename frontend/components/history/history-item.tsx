@@ -1,23 +1,45 @@
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {HistoryItemType} from "@/types/history-item";
 import {DataFormatter} from "@/helpers/data-formatter";
-import { Swipeable } from 'react-native-gesture-handler';
+import {Swipeable} from 'react-native-gesture-handler';
+import {useState} from "react";
+import FormInput from "@/components/form-input";
+import CustomSelect from "@/components/customSelect";
 
 type Props = {
     item: HistoryItemType
     onDelete: (item: HistoryItemType) => void;
+    onEdit: (item: HistoryItemType) => void;
 }
 
-export const HistoryItem = ({item, onDelete}: Props) => {
+export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
     const day = String(new Date(item.date).getDate()).padStart(2, '0');
     const month = new Date(item.date).toLocaleString('en-US', {month: 'short'});
+    const [isOpen, setIsOpen] = useState(false);
+    const [totalValue, setTotalValue] = useState(item.total);
+    const [typeValue, setTypeValue] = useState(item.type);
 
     const handleDelete = () => {
         onDelete(item)
     }
 
-    const handleEdit = () => {
-        console.log("Edit")
+    if (isOpen) {
+        return (
+            <View style={styles.editContainer}>
+                <CustomSelect onChange={setTypeValue} value={typeValue} options={[
+                    {label: "Refuel", value: "Refuel"},
+                    {label: "Maintenance", value: "Maintenance"},
+                    {label: "Tuning", value: "Tuning"},
+                ]}/>
+                <FormInput title={"Price"} placeholder={String(item.total)} type={"number"} value={totalValue}
+                           setValue={setTotalValue} error={false} badge={"$"} hideLabel/>
+                <Pressable onPress={() => {
+                    setIsOpen(false);
+                    item = {...item, total: totalValue, type: typeValue}
+                    onEdit(item)
+                }}><Text>T</Text></Pressable>
+            </View>
+        )
     }
 
     const renderRightActions = () => {
@@ -25,7 +47,7 @@ export const HistoryItem = ({item, onDelete}: Props) => {
             <View style={styles.rightActions}>
                 <Pressable
                     style={[styles.actionButton, styles.editButton]}
-                    onPress={handleEdit}
+                    onPress={() => setIsOpen(true)}
                 >
                     <Text style={styles.actionText}>Edit</Text>
                 </Pressable>
@@ -125,5 +147,14 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         padding: 10,
+    },
+    editContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: "#E5E5E5",
+        backgroundColor: 'white',
     }
 });

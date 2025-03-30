@@ -25,4 +25,20 @@ router.delete("/", async (req, res) => {
     }
 })
 
+router.put("/", async (req, res) => {
+    const data = req.body
+
+    try {
+        await db.update(costsData)
+            .set({
+                date: data.date,
+                total: data.total,
+                type: data.type
+            })
+            .where(eq(costsData.id, Number(data.id)));
+    } catch (error) {
+        res.status(500).json({error});
+    }
+})
+
 export default router;

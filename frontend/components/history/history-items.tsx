@@ -41,6 +41,17 @@ export const HistoryItems = ({activeView}: Props) => {
         }
     }
 
+    const handleEdit = async (item: HistoryItemType) => {
+        setData(prevData => prevData?.map(i => i.id === item.id ? item : i));
+
+        try {
+            await useApi("http://localhost:4000/history", "PUT", item)
+            fetchData()
+        } catch (error) {
+            console.error("Error editing item:", error)
+        }
+    }
+
     if (isLoading) {
         return <Loader/>
     }
@@ -56,7 +67,7 @@ export const HistoryItems = ({activeView}: Props) => {
             {(activeView === "All" ? data : filteredHistoryItemsList).length === 0 && <NoData/>}
             {(activeView === "All" ? data : filteredHistoryItemsList).map((item, index) => {
                 return (
-                    <HistoryItem key={index} item={item} onDelete={handleDelete}/>
+                    <HistoryItem key={index} item={item} onDelete={handleDelete} onEdit={handleEdit}/>
                 )
             })}
         </View>

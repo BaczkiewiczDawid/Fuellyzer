@@ -4,6 +4,7 @@ import {Title} from "@/components/title";
 import {useApi} from "@/hooks/useApi";
 import {useEffect, useState} from "react";
 import {Car} from "@/types/car";
+import {DataFormatter} from "@/helpers/data-formatter";
 
 export default function FuelingLog() {
     const [carsDataHistory, setCarsDataHistory] = useState([])
@@ -31,27 +32,31 @@ export default function FuelingLog() {
         setSelectedCarDataHistory(carsDataHistory.filter((car: Car) => car.carBrand === selectedCar.carBrand && car.carName === selectedCar.carName))
     }, [selectedCar]);
 
-    console.log(selectedCarDataHistory)
+    console.log(selectedCarDataHistory, "a")
 
     return (
         <Wrapper>
             <Title>Fueling history</Title>
-            {selectedCarDataHistory.map((car: Car) => {
+            {selectedCarDataHistory.map((car: any, index) => {
                 return (
                     <View style={styles.historyItemWrapper}>
                         <View style={styles.mainInfoWrapper}>
                             <View>
-                                <Text style={styles.bold}>24-01-2025</Text>
-                                <Text>$65.43</Text>
+                                <Text style={styles.bold}>{car.createdAt.split("T")[0]}</Text>
+                                <Text>{DataFormatter(car.total, "moneyRounded")}</Text>
                             </View>
                             <View>
-                                <Text style={styles.bold}>147 954km</Text>
-                                <Text>+412km</Text>
+                                <Text style={styles.bold}>{DataFormatter(car.mileage, "kilometers")}</Text>
+                                {index === 0 ? <Text style={styles.bold}>{car.mileage}</Text> :
+                                    //todo: write types
+                                    //@ts-ignore
+                                    <Text>+ {car.mileage - selectedCarDataHistory[index - 1]?.mileage}km</Text>
+                                }
                             </View>
                         </View>
                         <View style={styles.detailsWrapper}>
                             <View style={styles.detailsWrapper}>
-                                <Text>PB95 $1.64</Text>
+                                <Text>{car.fuelType} {car.price}</Text>
                                 <Text>12.5 l/100</Text>
                             </View>
                         </View>

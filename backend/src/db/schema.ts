@@ -12,6 +12,8 @@ export const costsData = pgTable("costsData", {
     carBrand: text("carBrand").notNull(),
     carName: text("carName").notNull(),
     fullRefuel: boolean("fullRefuel").notNull().default(false),
+    fuelPrice: doublePrecision("fuelPrice"),
+    mileage: integer("mileage"),
 })
 
 export const userCarsList = pgTable("userCarsList", {

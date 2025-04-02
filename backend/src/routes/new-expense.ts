@@ -19,6 +19,8 @@ router.post("/", async (req, res) => {
             carBrand: data.carBrand,
             carName: data.carName,
             fullRefuel: data.fullRefuel,
+            fuelPrice: data.price,
+            mileage: data.mileage,
         });
 
         if (response) {

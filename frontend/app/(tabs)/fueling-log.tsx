@@ -8,7 +8,7 @@ import {DataFormatter} from "@/helpers/data-formatter";
 
 export default function FuelingLog() {
     const [carsDataHistory, setCarsDataHistory] = useState([])
-    const [selectedCarDataHistory, setSelectedCarDataHistory] = useState([])
+    const [selectedCarDataHistory, setSelectedCarDataHistory] = useState<Car[]>([])
     const [selectedCar, setSelectedCar] = useState({
         carBrand: "Volkswagen",
         carName: "Golf VII",
@@ -32,8 +32,6 @@ export default function FuelingLog() {
         setSelectedCarDataHistory(carsDataHistory.filter((car: Car) => car.carBrand === selectedCar.carBrand && car.carName === selectedCar.carName))
     }, [selectedCar]);
 
-    console.log(selectedCarDataHistory, "a")
-
     return (
         <Wrapper>
             <Title>Fueling history</Title>
@@ -48,8 +46,6 @@ export default function FuelingLog() {
                             <View>
                                 <Text style={styles.bold}>{DataFormatter(car.mileage, "kilometers")}</Text>
                                 {index === 0 ? <Text style={styles.bold}>{car.mileage}</Text> :
-                                    //todo: write types
-                                    //@ts-ignore
                                     <Text>+ {car.mileage - selectedCarDataHistory[index - 1]?.mileage}km</Text>
                                 }
                             </View>

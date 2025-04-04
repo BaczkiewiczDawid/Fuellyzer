@@ -49,7 +49,7 @@ export default function FuelingLog() {
                             </View>
                             <View>
                                 <Text style={styles.bold}>{DataFormatter(car.mileage, "kilometers")}</Text>
-                                {index === 0 ? <Text style={styles.bold}>{car.mileage}</Text> :
+                                {index !== 0 &&
                                     <Text>+ {mileageOnRefuel}km</Text>
                                 }
                             </View>

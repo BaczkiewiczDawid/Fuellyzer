@@ -30,12 +30,16 @@ export default function FuelingLog() {
 
     useEffect(() => {
         setSelectedCarDataHistory(carsDataHistory.filter((car: Car) => car.carBrand === selectedCar.carBrand && car.carName === selectedCar.carName))
-    }, [selectedCar]);
+    }, [selectedCar, carsDataHistory]);
 
     return (
         <Wrapper>
             <Title>Fueling history</Title>
             {selectedCarDataHistory.map((car: any, index) => {
+                const mileageOnRefuel = car.mileage - selectedCarDataHistory[index - 1]?.mileage;
+                const litersFueled = car.total / car.fuelPrice;
+                const fuelConsumption = (litersFueled / mileageOnRefuel * 100).toFixed(2);
+
                 return (
                     <View style={styles.historyItemWrapper}>
                         <View style={styles.mainInfoWrapper}>
@@ -46,14 +50,16 @@ export default function FuelingLog() {
                             <View>
                                 <Text style={styles.bold}>{DataFormatter(car.mileage, "kilometers")}</Text>
                                 {index === 0 ? <Text style={styles.bold}>{car.mileage}</Text> :
-                                    <Text>+ {car.mileage - selectedCarDataHistory[index - 1]?.mileage}km</Text>
+                                    <Text>+ {mileageOnRefuel}km</Text>
                                 }
                             </View>
                         </View>
                         <View style={styles.detailsWrapper}>
                             <View style={styles.detailsWrapper}>
                                 <Text>{car.fuelType} {car.price}</Text>
-                                <Text>12.5 l/100</Text>
+                                {index !== 0 &&
+                                    <Text>{fuelConsumption} l/100</Text>
+                                }
                             </View>
                         </View>
                     </View>

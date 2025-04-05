@@ -53,6 +53,11 @@ export default function FuelingLog() {
         <Wrapper>
             <Title>Fueling history</Title>
             <CarSelector availableCars={availableCars} selectedCar={selectedCar} setSelectedCar={setSelectedCar}/>
+            {selectedCarDataHistory.length === 0 && (
+                <View style={{marginTop: 20}}>
+                    <Text style={{textAlign: "center"}}>No data available</Text>
+                </View>
+            )}
             {selectedCarDataHistory.map((car: any, index) => {
                 const mileageOnRefuel = car.mileage - selectedCarDataHistory[index - 1]?.mileage;
                 const litersFueled = car.total / car.fuelPrice;

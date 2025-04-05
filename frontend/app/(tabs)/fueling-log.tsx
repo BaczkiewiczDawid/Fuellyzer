@@ -5,6 +5,7 @@ import {useApi} from "@/hooks/useApi";
 import {useEffect, useState} from "react";
 import {Car} from "@/types/car";
 import {DataFormatter} from "@/helpers/data-formatter";
+import {CarSelector} from "@/components/car-selector";
 
 export default function FuelingLog() {
     const [carsDataHistory, setCarsDataHistory] = useState([])
@@ -13,6 +14,7 @@ export default function FuelingLog() {
         carBrand: "Volkswagen",
         carName: "Golf VII",
     })
+    const [availableCars, setAvailableCars] = useState<Car[]>([])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,12 +31,28 @@ export default function FuelingLog() {
     }, [])
 
     useEffect(() => {
+        const fetchData = async () => {
+            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+
+            setAvailableCars(response.map((car: Car) => ({
+                carBrand: car.carBrand,
+                carName: car.carName,
+                defaultSelected: car.defaultSelected,
+                mileage: car.mileage
+            } as Car)));
+        }
+
+        fetchData()
+    }, [])
+
+    useEffect(() => {
         setSelectedCarDataHistory(carsDataHistory.filter((car: Car) => car.carBrand === selectedCar.carBrand && car.carName === selectedCar.carName))
     }, [selectedCar, carsDataHistory]);
 
     return (
         <Wrapper>
             <Title>Fueling history</Title>
+            <CarSelector availableCars={availableCars} selectedCar={selectedCar} setSelectedCar={setSelectedCar}/>
             {selectedCarDataHistory.map((car: any, index) => {
                 const mileageOnRefuel = car.mileage - selectedCarDataHistory[index - 1]?.mileage;
                 const litersFueled = car.total / car.fuelPrice;
@@ -56,7 +74,7 @@ export default function FuelingLog() {
                         </View>
                         <View style={styles.detailsWrapper}>
                             <View style={styles.detailsWrapper}>
-                                <Text>{car.fuelType} {car.price}</Text>
+                                <Text>{`${car.details} $${car.fuelPrice}/l`}</Text>
                                 {index !== 0 &&
                                     <Text>{fuelConsumption} l/100</Text>
                                 }
@@ -77,6 +95,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#E5E5E5",
         backgroundColor: 'white',
+        marginTop: 20,
     },
     mainInfoWrapper: {
         flexDirection: "row",

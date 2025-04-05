@@ -43,7 +43,7 @@ export const Summary = ({type}: Props) => {
         }
 
         fetchData()
-    }, []);
+    }, [carBrand, carName]);
 
     const today = new Date()
 

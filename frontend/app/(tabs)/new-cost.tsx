@@ -7,10 +7,10 @@ import {Pressable, StyleSheet, Switch, Text, TouchableOpacity, View} from "react
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {FormInput} from "@/components/form-input";
-import Svg, {Circle, Path} from "react-native-svg";
 import {router} from "expo-router";
 import {DataFormatter} from "@/helpers/data-formatter";
 import CustomSelect from "@/components/customSelect";
+import {CarSelector} from "@/components/car-selector";
 
 export default function NewCost() {
     const [activeView, setActiveView] = useState("Refuel");
@@ -141,40 +141,7 @@ export default function NewCost() {
             <Description>Fill in the form below to add a new cost</Description>
             <View style={styles.formWrapper}>
                 <Navigation activeView={activeView} setActiveView={setActiveView} views={views}/>
-                <View style={styles.vehicleContainer}>
-                    {availableCars.map((car) => (
-                        <TouchableOpacity
-                            key={car.id}
-                            style={[styles.carOption, selectedCar?.carName === car.carName && styles.selected]}
-                            onPress={() => setSelectedCar({
-                                carBrand: car.carBrand,
-                                carName: car.carName,
-                                mileage: car.mileage
-                            })}
-                        >
-                            <View style={styles.carIcon}>
-                                <Svg width={20} height={20} viewBox="0 0 24 24" stroke="black" strokeWidth={2}
-                                     fill="none">
-                                    <Path
-                                        d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.4 1 12.3 1 13.2V16c0 .6.4 1 1 1h2"/>
-                                    <Circle cx={7} cy={17} r={2}/>
-                                    <Path d="M9 17h6"/>
-                                    <Circle cx={17} cy={17} r={2}/>
-                                </Svg>
-                            </View>
-                            <View style={styles.carDetails}>
-                                <Text
-                                    style={styles.carName}>{car.carBrand} {car.carName}</Text>
-                            </View>
-                            {selectedCar?.carName === car.carName && (
-                                <Svg width={20} height={20} viewBox="0 0 24 24" stroke="black" strokeWidth={2}
-                                     fill="none">
-                                    <Path d="M20 6L9 17l-5-5"/>
-                                </Svg>
-                            )}
-                        </TouchableOpacity>
-                    ))}
-                </View>
+                <CarSelector availableCars={availableCars} selectedCar={selectedCar} setSelectedCar={setSelectedCar} />
                 {activeView === "Refuel" && (
                     <View style={styles.form}>
                         <View style={styles.inputsContainer}>
@@ -276,46 +243,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#fafafa",
         textAlign: "center",
-    },
-    vehicleSelector: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#1E88E5',
-        padding: 14,
-        marginHorizontal: 16,
-        marginTop: 16,
-        borderRadius: 4,
-    },
-    vehicleSelectorText: {
-        color: 'white',
-        fontWeight: '500',
-    },
-    carOption: {
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 10,
-        borderRadius: 10,
-        marginBottom: 10,
-    },
-    selected: {
-        borderColor: "#0F77F0",
-        borderWidth: 1,
-    },
-    carIcon: {
-        marginRight: 10
-    },
-    carDetails: {
-        flex: 1
-    },
-    carName: {
-        fontSize: 16, fontWeight: "bold"
-    },
-    carInfo: {
-        fontSize: 14, color: "gray"
-    },
-    vehicleContainer: {
-        marginTop: 30,
     },
     inputsContainer: {
         flexDirection: "row",

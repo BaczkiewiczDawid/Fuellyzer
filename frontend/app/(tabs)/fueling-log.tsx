@@ -7,9 +7,25 @@ import {Car} from "@/types/car";
 import {DataFormatter} from "@/helpers/data-formatter";
 import {CarSelector} from "@/components/car-selector";
 
+type CostsHistory = {
+    createdAt: string;
+    carBrand: string;
+    carName: string;
+    fuelPrice: number;
+    mileage: number;
+    total: number;
+    details: string;
+    type: string;
+    id: string
+    fullRefuel: boolean
+    email: string
+    date: string;
+    currency: string;
+}
+
 export default function FuelingLog() {
     const [carsDataHistory, setCarsDataHistory] = useState([])
-    const [selectedCarDataHistory, setSelectedCarDataHistory] = useState<Car[]>([])
+    const [selectedCarDataHistory, setSelectedCarDataHistory] = useState<CostsHistory[]>([])
     const [selectedCar, setSelectedCar] = useState({
         carBrand: "Volkswagen",
         carName: "Golf VII",
@@ -49,6 +65,30 @@ export default function FuelingLog() {
         setSelectedCarDataHistory(carsDataHistory.filter((car: Car) => car.carBrand === selectedCar.carBrand && car.carName === selectedCar.carName))
     }, [selectedCar, carsDataHistory]);
 
+    const calculateAverageFuelConsumption = () => {
+        if (selectedCarDataHistory && selectedCarDataHistory.length >= 3) {
+            let totalFuelLiters = 0;
+            let totalDistance = 0;
+
+            for (let i = 1; i < selectedCarDataHistory.length; i++) {
+                const entry = selectedCarDataHistory[i];
+                totalFuelLiters += entry.total / entry.fuelPrice;
+
+                const previousEntry = selectedCarDataHistory[i - 1];
+                const segmentDistance = entry.mileage - previousEntry.mileage;
+                totalDistance += segmentDistance;
+            }
+
+            if (totalDistance > 0) {
+                return ((totalFuelLiters / totalDistance) * 100).toFixed(2);
+            }
+        }
+
+        return null;
+    }
+
+    const averageFuelConsumption = calculateAverageFuelConsumption();
+
     return (
         <Wrapper>
             <Title>Fueling history</Title>
@@ -58,10 +98,10 @@ export default function FuelingLog() {
                     <Text style={{textAlign: "center"}}>No data available</Text>
                 </View>
             )}
-            {selectedCarDataHistory.map((car: any, index) => {
+            {selectedCarDataHistory.map((car: CostsHistory, index) => {
                 const mileageOnRefuel = car.mileage - selectedCarDataHistory[index - 1]?.mileage;
                 const litersFueled = car.total / car.fuelPrice;
-                const fuelConsumption = (litersFueled / mileageOnRefuel * 100).toFixed(2);
+                const fuelConsumption = Number((litersFueled / mileageOnRefuel * 100).toFixed(2));
 
                 return (
                     <View style={styles.historyItemWrapper}>
@@ -81,7 +121,8 @@ export default function FuelingLog() {
                             <View style={styles.detailsWrapper}>
                                 <Text>{`${car.details} $${car.fuelPrice}/l`}</Text>
                                 {index !== 0 &&
-                                    <Text>{fuelConsumption} l/100</Text>
+                                    <Text
+                                        style={averageFuelConsumption && Number(averageFuelConsumption) > fuelConsumption ? styles.green : styles.red}>{fuelConsumption} l/100</Text>
                                 }
                             </View>
                         </View>
@@ -117,5 +158,11 @@ const styles = StyleSheet.create({
     },
     bold: {
         fontWeight: "bold",
-    }
+    },
+    green: {
+        color: "#4CAF50",
+    },
+    red: {
+        color: "#FF0000",
+    },
 })

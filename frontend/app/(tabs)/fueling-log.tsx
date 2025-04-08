@@ -74,7 +74,7 @@ export default function FuelingLog() {
                 const entry = selectedCarDataHistory[i];
                 totalFuelLiters += entry.total / entry.fuelPrice;
 
-                const previousEntry = selectedCarDataHistory[i-1];
+                const previousEntry = selectedCarDataHistory[i - 1];
                 const segmentDistance = entry.mileage - previousEntry.mileage;
                 totalDistance += segmentDistance;
             }
@@ -98,10 +98,10 @@ export default function FuelingLog() {
                     <Text style={{textAlign: "center"}}>No data available</Text>
                 </View>
             )}
-            {selectedCarDataHistory.map((car: any, index) => {
+            {selectedCarDataHistory.map((car: CostsHistory, index) => {
                 const mileageOnRefuel = car.mileage - selectedCarDataHistory[index - 1]?.mileage;
                 const litersFueled = car.total / car.fuelPrice;
-                const fuelConsumption = (litersFueled / mileageOnRefuel * 100).toFixed(2);
+                const fuelConsumption = Number((litersFueled / mileageOnRefuel * 100).toFixed(2));
 
                 return (
                     <View style={styles.historyItemWrapper}>
@@ -121,7 +121,8 @@ export default function FuelingLog() {
                             <View style={styles.detailsWrapper}>
                                 <Text>{`${car.details} $${car.fuelPrice}/l`}</Text>
                                 {index !== 0 &&
-                                    <Text>{fuelConsumption} l/100</Text>
+                                    <Text
+                                        style={averageFuelConsumption && Number(averageFuelConsumption) > fuelConsumption ? styles.green : styles.red}>{fuelConsumption} l/100</Text>
                                 }
                             </View>
                         </View>
@@ -157,5 +158,11 @@ const styles = StyleSheet.create({
     },
     bold: {
         fontWeight: "bold",
-    }
+    },
+    green: {
+        color: "#4CAF50",
+    },
+    red: {
+        color: "#FF0000",
+    },
 })

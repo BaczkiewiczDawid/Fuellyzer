@@ -13,12 +13,11 @@ export const StatCard = ({
                              value,
                              subtitle,
                              variant = "blue",
-                             style
                          }: Props) => {
     const backgroundColor = variant === "blue" ? "#0F77F0" : "#121212";
 
     return (
-        <View style={[styles.container, {backgroundColor}, style]}>
+        <View style={[styles.container, {backgroundColor}, variant === "blue" ? styles.boxLarge : styles.boxSmall]}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.detailsWrapper}>
                 <Text style={styles.statisticsHeader}>{value}</Text>
@@ -39,10 +38,6 @@ const styles = StyleSheet.create({
         padding: 16,
         color: "#fafafa",
     },
-    boxSize: {
-        width: "50%",
-        height: 170,
-    },
     title: {
         color: "#fafafa",
         fontSize: 14,
@@ -60,16 +55,10 @@ const styles = StyleSheet.create({
     detailsWrapper: {
         marginTop: "auto",
     },
-    rightColumn: {
-        width: "50%",
-        justifyContent: "space-between",
+    boxLarge: {
+        height: 170,
     },
-    totalCostContainer: {
-        marginTop: 10,
-        flex: 1,
-    },
-    mileageContainer: {
-        marginTop: 10,
-        width: "50%",
+    boxSmall: {
+        height: 100,
     }
 });

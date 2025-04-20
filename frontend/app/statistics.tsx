@@ -2,8 +2,16 @@ import {Wrapper} from "@/components/wrapper";
 import {StyleSheet, Text, View} from "react-native"
 import {StatCard} from "@/components/statistics/stat-card";
 
+type Data = {
+    [key: string]: {
+        value: string;
+        subtitle?: string;
+        variant?: "blue" | "dark";
+    }
+}
+
 export default function Statistics() {
-    const statsData = {
+    const statsData: Data = {
         fuelConsumption: {
             value: "10,5l",
             subtitle: "Litres per 100km",
@@ -24,9 +32,6 @@ export default function Statistics() {
         }
     };
 
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
     return (
         <Wrapper>
             <View>
@@ -34,24 +39,30 @@ export default function Statistics() {
                 <Text>This year</Text>
             </View>
             <View style={styles.statisticsWrapper}>
-                <StatCard
-                    title="Fuel Consumption"
-                    value={statsData.fuelConsumption.value}
-                    subtitle={statsData.fuelConsumption.subtitle}
-                    //@ts-ignore
-                    variant={statsData.fuelConsumption.variant}
-                />
-
-                <View style={styles.rightColumn}>
+                <View style={styles.leftContainer}>
                     <StatCard
-                        title="Cost per kilometer"
+                        title="Fuel Consumption"
+                        value={statsData.fuelConsumption.value}
+                        subtitle={statsData.fuelConsumption.subtitle}
+                        //@ts-ignore
+                        variant={statsData.variant}
+                    />
+                    <StatCard
+                        title="Fuel Consumption"
+                        value={statsData.mileage.value}
+                        //@ts-ignore
+                        variant={statsData.mileage.variant}
+                    />
+                </View>
+                <View style={styles.rightContainer}>
+                    <StatCard
+                        title="Fuel Consumption"
                         value={statsData.costPerKm.value}
                         //@ts-ignore
                         variant={statsData.costPerKm.variant}
                     />
-
                     <StatCard
-                        title="Total cost"
+                        title="Fuel Consumption"
                         value={statsData.totalCost.value}
                         subtitle={statsData.totalCost.subtitle}
                         //@ts-ignore
@@ -75,33 +86,14 @@ const styles = StyleSheet.create({
         marginTop: 20,
         flexDirection: "row",
         justifyContent: "space-between",
-        flexShrink: 2,
+        columnGap: 10,
     },
-    title: {
-        color: "#fafafa",
-        fontSize: 14,
+    leftContainer: {
+        width: "50%",
+        rowGap: 10,
     },
-    statisticsHeader: {
-        color: "#fafafa",
-        fontWeight: "bold",
-        fontSize: 30,
-    },
-    staticticsDetails: {
-        color: "#fafafa",
-        fontSize: 14,
-    },
-    detailsWrapper: {
-        marginTop: "50%",
-    },
-    totalCostContainer: {
-        marginTop: 10,
-        flex: 1,
-    },
-    rightColumn: {
-        width: "48%",
-        justifyContent: "space-between",
-    },
-    boxSize: {
-        height: 170,
-    },
+    rightContainer: {
+        width: "50%",
+        rowGap: 10,
+    }
 })

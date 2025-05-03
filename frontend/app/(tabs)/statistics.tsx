@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Wrapper } from '@/components/wrapper';
 import CustomSelect from '@/components/customSelect';
+import { useApi } from '@/hooks/useApi';
 
-const carOptions = [
-    { label: 'Volkswagen Golf VII', value: 'golf7' },
-    { label: 'Toyota Corolla', value: 'corolla' },
-];
 const yearOptions = [
     { label: 'This year', value: 'this_year' },
     { label: 'Last year', value: 'last_year' },
 ];
 
 export default function StatisticsScreen() {
-    const [selectedCar, setSelectedCar] = useState(carOptions[0].value);
+    const [carOptions, setCarOptions] = useState<{ label: string, value: string }[]>([]);
+    const [selectedCar, setSelectedCar] = useState<string>("");
     const [selectedYear, setSelectedYear] = useState(yearOptions[0].value);
     const [activeTile, setActiveTile] = useState('fuel');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+
+            const options = response.map((car: any) => ({
+                label: `${car.carBrand} ${car.carName}`,
+                value: `${car.carBrand}_${car.carName}`,
+            }));
+            setCarOptions(options);
+            if (options.length > 0) setSelectedCar(options[0].value);
+        }
+
+        fetchData();
+    }, []);
+
 
     return (
         <Wrapper>

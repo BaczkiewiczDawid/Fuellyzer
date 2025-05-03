@@ -20,7 +20,7 @@ export default function TabLayout() {
                     },
                     default: {},
                 }),
-            }}>G
+            }}>
             <Tabs.Screen
                 name="index"
                 options={{

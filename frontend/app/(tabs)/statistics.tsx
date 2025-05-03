@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Wrapper } from '@/components/wrapper';
 import CustomSelect from '@/components/customSelect';
 import { useApi } from '@/hooks/useApi';
+import { DataFormatter } from '@/helpers/data-formatter';
 
 const yearOptions = [
     { label: 'This year', value: 'this_year' },
@@ -14,6 +15,7 @@ export default function StatisticsScreen() {
     const [selectedCar, setSelectedCar] = useState<string>("");
     const [selectedYear, setSelectedYear] = useState(yearOptions[0].value);
     const [activeTile, setActiveTile] = useState('fuel');
+    const [carHistory, setCarHistory] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,6 +32,58 @@ export default function StatisticsScreen() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const fetchHistory = async () => {
+            if (!selectedCar) return;
+
+            try {
+                const historyData = await useApi("http://localhost:4000/history", "GET");
+                setCarHistory(historyData);
+            } catch (error) {
+                console.error("Failed to fetch car history:", error);
+                setCarHistory([]);
+            }
+        };
+
+        fetchHistory();
+    }, [selectedCar, selectedYear]);
+
+    console.log(carHistory)
+
+    const calculateAverageFuelConsumption = () => {
+        if (!carHistory || carHistory.length === 0 || !selectedCar) return 0;
+
+        const [selectedBrand, ...selectedNameParts] = selectedCar.split('_');
+        const selectedName = selectedNameParts.join(' ');
+
+        const currentYear = new Date().getFullYear();
+        const targetYear = selectedYear === 'this_year' ? currentYear : currentYear - 1;
+
+        const fuelEntries = carHistory.filter(entry => {
+            const entryDate = new Date(entry.date);
+            return (
+                entry.carBrand === selectedBrand &&
+                entry.carName === selectedName &&
+                entryDate.getFullYear() === targetYear &&
+                entry.type === 'Refuel' &&
+                entry.total && entry.mileage
+            );
+        });
+
+        if (fuelEntries.length < 2) return 0;
+
+        fuelEntries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        const relevantEntries = fuelEntries.slice(1);
+        const totalLiters = relevantEntries.reduce((sum, entry) => sum + (parseFloat(entry.fuelPrice) > 0 ? parseFloat(entry.total) / parseFloat(entry.fuelPrice) : 0), 0);
+        const distance = fuelEntries[fuelEntries.length - 1].mileage - fuelEntries[0].mileage;
+
+        console.log(totalLiters, distance)
+
+        return distance > 0 ? (totalLiters / distance) * 100 : 0;
+    };
+
+    const averageFuelConsumption = calculateAverageFuelConsumption();
 
     return (
         <Wrapper>
@@ -56,7 +110,7 @@ export default function StatisticsScreen() {
                     <View style={[styles.tile, styles.largeBlueTile]}>
                         <View style={styles.topView}>
                             <Text style={styles.tileLabel}>Fuel Consumption</Text>
-                            <Text style={styles.tileValue}>10,51</Text>
+                            <Text style={styles.tileValue}>{averageFuelConsumption.toFixed(2).replace(".", ",")}</Text>
                         </View>
                         <Text style={styles.tileDesc}>Litres per 100km</Text>
                     </View>

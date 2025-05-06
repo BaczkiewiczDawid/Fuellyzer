@@ -5,6 +5,7 @@ import {useApi} from "@/hooks/useApi";
 import {NoData} from "@/components/no-data";
 import {Loader} from "@/components/loader";
 import {HistoryItemType} from "@/types/history-item";
+import { SERVER_URL } from '../../constants/env';
 
 type Props = {
     activeView: "All" | "Refuel" | "Maintance",
@@ -17,7 +18,7 @@ export const HistoryItems = ({activeView}: Props) => {
     const fetchData = useCallback(async () => {
         setIsLoading(true)
         try {
-            const response = await useApi("http://localhost:4000/history", "GET");
+            const response = await useApi(`${SERVER_URL}/history`, "GET");
             setData(response)
         } catch (error) {
             console.error("Error fetching history data:", error)
@@ -34,7 +35,7 @@ export const HistoryItems = ({activeView}: Props) => {
         try {
             setData(prevData => prevData?.filter(i => i.id !== item.id))
 
-            await useApi("http://localhost:4000/history", "DELETE", item)
+            await useApi(`${SERVER_URL}/history`, "DELETE", item)
             fetchData()
         } catch (error) {
             console.error("Error deleting item:", error)
@@ -45,7 +46,7 @@ export const HistoryItems = ({activeView}: Props) => {
         setData(prevData => prevData?.map(i => i.id === item.id ? item : i));
 
         try {
-            await useApi("http://localhost:4000/history", "PUT", item)
+            await useApi(`${SERVER_URL}/history`, "PUT", item)
             fetchData()
         } catch (error) {
             console.error("Error editing item:", error)

@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {Button} from "@/components/button";
+import { SERVER_URL } from '../../constants/env';
 
 export default function Cars() {
     const [userCarsList, setUserCarsList] = useState<Car[]>([]);
@@ -16,7 +17,7 @@ export default function Cars() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+            const response = await useApi(`${SERVER_URL}/user-cars-list`, "GET")
 
             if (response) {
                 setUserCarsList(response);
@@ -29,7 +30,7 @@ export default function Cars() {
     }, []);
 
     const handleDelete = async (carBrand: string, carName: string) => {
-        const response = await useApi("http://localhost:4000/new-car", "DELETE", {
+        const response = await useApi(`${SERVER_URL}/new-car`, "DELETE", {
             email: "baczkiewicz.dawid22@gmail.com",
             carBrand,
             carName,
@@ -48,7 +49,7 @@ export default function Cars() {
             {!userCarsList.length && !isLoading && (
                 <View style={styles.noDataContainer}>
                     <Title centered>
-                        There’s no cars
+                        There's no cars
                         added yet</Title>
                 </View>
             )}

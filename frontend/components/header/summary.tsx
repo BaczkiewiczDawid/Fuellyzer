@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {useApi} from "@/hooks/useApi";
 import {Car} from "@/types/car";
 import {useUserStore} from "@/context/user";
+import { SERVER_URL } from '../../constants/env';
 
 type Props = {
     type: string
@@ -28,8 +29,8 @@ export const Summary = ({type}: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const historyResponse = await useApi("http://localhost:4000/history", "GET")
-            const carDetailsResponse = await useApi("http://localhost:4000/user-cars-list", "GET")
+            const historyResponse = await useApi(`${SERVER_URL}/history`, "GET")
+            const carDetailsResponse = await useApi(`${SERVER_URL}/user-cars-list`, "GET")
 
             if (carBrand && carName) {
                 setHistoryData(await historyResponse.filter((item: Car) => item.carBrand === carBrand && item.carName === carName))

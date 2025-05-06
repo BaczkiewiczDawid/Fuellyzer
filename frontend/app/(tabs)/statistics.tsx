@@ -199,8 +199,7 @@ export default function StatisticsScreen() {
                     </View>
                 </View>
             </View>
-
-            <View style={styles.chartContainer}></View>
+            {/* <View style={styles.chartContainer}></View> */}
         </Wrapper>
     );
 }

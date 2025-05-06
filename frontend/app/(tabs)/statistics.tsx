@@ -150,8 +150,6 @@ export default function StatisticsScreen() {
     const averageCostPerKilometer = calculateAverageCostPerKilometer()
     const totalCost = calculateTotalCost()
 
-    console.log(totalCost)
-
     return (
         <Wrapper>
             <View style={styles.headerRow}>

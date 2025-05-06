@@ -11,10 +11,9 @@ const yearOptions = [
 ];
 
 export default function StatisticsScreen() {
-    const [carOptions, setCarOptions] = useState<{ label: string, value: string }[]>([]);
+    const [carOptions, setCarOptions] = useState<{ label: string, value: string, mileage: number }[]>([]);
     const [selectedCar, setSelectedCar] = useState<string>("");
     const [selectedYear, setSelectedYear] = useState(yearOptions[0].value);
-    const [activeTile, setActiveTile] = useState('fuel');
     const [carHistory, setCarHistory] = useState<any[]>([]);
 
     useEffect(() => {
@@ -24,6 +23,7 @@ export default function StatisticsScreen() {
             const options = response.map((car: any) => ({
                 label: `${car.carBrand} ${car.carName}`,
                 value: `${car.carBrand}_${car.carName}`,
+                mileage: car.mileage
             }));
             setCarOptions(options);
             if (options.length > 0) setSelectedCar(options[0].value);
@@ -47,8 +47,6 @@ export default function StatisticsScreen() {
 
         fetchHistory();
     }, [selectedCar, selectedYear]);
-
-    console.log(carHistory)
 
     const calculateAverageFuelConsumption = () => {
         if (!carHistory || carHistory.length === 0 || !selectedCar) return 0;
@@ -78,12 +76,80 @@ export default function StatisticsScreen() {
         const totalLiters = relevantEntries.reduce((sum, entry) => sum + (parseFloat(entry.fuelPrice) > 0 ? parseFloat(entry.total) / parseFloat(entry.fuelPrice) : 0), 0);
         const distance = fuelEntries[fuelEntries.length - 1].mileage - fuelEntries[0].mileage;
 
-        console.log(totalLiters, distance)
-
         return distance > 0 ? (totalLiters / distance) * 100 : 0;
     };
 
-    const averageFuelConsumption = calculateAverageFuelConsumption();
+    const calculateAverageCostPerKilometer = () => {
+        if (!carHistory || carHistory.length === 0 || !selectedCar) return 0;
+
+        const [selectedBrand, ...selectedNameParts] = selectedCar.split('_');
+        const selectedName = selectedNameParts.join(' ');
+
+        const currentYear = new Date().getFullYear();
+        const targetYear = selectedYear === 'this_year' ? currentYear : currentYear - 1;
+
+        const costEntries = carHistory.filter(entry => {
+            const entryDate = new Date(entry.date);
+            return (
+                entry.carBrand === selectedBrand &&
+                entry.carName === selectedName &&
+                entryDate.getFullYear() === targetYear &&
+                entry.total && entry.mileage
+            );
+        });
+
+        if (costEntries.length < 2) return 0;
+
+        costEntries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        const totalCost = costEntries.reduce((sum, entry) => sum + parseFloat(entry.total), 0);
+        const distance = costEntries[costEntries.length - 1].mileage - costEntries[0].mileage;
+
+        return distance > 0 ? totalCost / distance : 0;
+    };
+
+    const calculateTotalCost = () => {
+        if (!carHistory || carHistory.length === 0 || !selectedCar) return 0;
+
+        const [selectedBrand, ...selectedNameParts] = selectedCar.split('_');
+        const selectedName = selectedNameParts.join(' ');
+
+        const currentYear = new Date().getFullYear();
+        const targetYear = selectedYear === 'this_year' ? currentYear : currentYear - 1;
+        const currentDate = new Date();
+
+        const costEntries = carHistory.filter(entry => {
+            const entryDate = new Date(entry.date);
+
+            if (selectedYear === 'this_year') {
+                const oneYearAgo = new Date();
+                oneYearAgo.setDate(oneYearAgo.getDate() - 365);
+                return (
+                    entry.carBrand === selectedBrand &&
+                    entry.carName === selectedName &&
+                    entryDate >= oneYearAgo &&
+                    entryDate <= currentDate &&
+                    entry.total
+                );
+            } else {
+                return (
+                    entry.carBrand === selectedBrand &&
+                    entry.carName === selectedName &&
+                    entryDate.getFullYear() === targetYear &&
+                    entry.total
+                );
+            }
+        });
+
+        const totalCost = costEntries.reduce((sum, entry) => sum + parseFloat(entry.total), 0);
+        return totalCost;
+    };
+
+    const averageFuelConsumption = calculateAverageFuelConsumption()
+    const averageCostPerKilometer = calculateAverageCostPerKilometer()
+    const totalCost = calculateTotalCost()
+
+    console.log(totalCost)
 
     return (
         <Wrapper>
@@ -116,18 +182,18 @@ export default function StatisticsScreen() {
                     </View>
                     <View style={[styles.tile, styles.smallDarkTile]}>
                         <Text style={styles.tileLabel}>Mileage</Text>
-                        <Text style={styles.tileValue}>147 248</Text>
+                        <Text style={styles.tileValue}>{DataFormatter(carOptions.find((car) => car.value === selectedCar)?.mileage, "kilometers")}</Text>
                     </View>
                 </View>
                 <View style={styles.column}>
                     <View style={[styles.tile, styles.smallDarkTile]}>
                         <Text style={styles.tileLabel}>Cost per kilometer</Text>
-                        <Text style={styles.tileValue}>0,64zł</Text>
+                        <Text style={styles.tileValue}>{DataFormatter(averageCostPerKilometer, "moneyRounded")}</Text>
                     </View>
                     <View style={[styles.tile, styles.largeBlueTile]}>
                         <View style={styles.topView}>
                             <Text style={styles.tileLabel}>Total cost</Text>
-                            <Text style={styles.tileValue}>14 654zł</Text>
+                            <Text style={styles.tileValue}>{DataFormatter(totalCost, "moneyRounded")}</Text>
                         </View>
                         <Text style={styles.tileDesc}>In last 365 days</Text>
                     </View>

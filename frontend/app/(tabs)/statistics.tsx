@@ -4,6 +4,7 @@ import { Wrapper } from '@/components/wrapper';
 import CustomSelect from '@/components/customSelect';
 import { useApi } from '@/hooks/useApi';
 import { DataFormatter } from '@/helpers/data-formatter';
+import { SERVER_URL } from '../../constants/env';
 
 const yearOptions = [
     { label: 'This year', value: 'this_year' },
@@ -18,7 +19,7 @@ export default function StatisticsScreen() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+            const response = await useApi(`${SERVER_URL}/user-cars-list`, "GET")
 
             const options = response.map((car: any) => ({
                 label: `${car.carBrand} ${car.carName}`,
@@ -37,7 +38,7 @@ export default function StatisticsScreen() {
             if (!selectedCar) return;
 
             try {
-                const historyData = await useApi("http://localhost:4000/history", "GET");
+                const historyData = await useApi(`${SERVER_URL}/history`, "GET");
                 setCarHistory(historyData);
             } catch (error) {
                 console.error("Failed to fetch car history:", error);
@@ -148,8 +149,6 @@ export default function StatisticsScreen() {
     const averageFuelConsumption = calculateAverageFuelConsumption()
     const averageCostPerKilometer = calculateAverageCostPerKilometer()
     const totalCost = calculateTotalCost()
-
-    console.log(totalCost)
 
     return (
         <Wrapper>

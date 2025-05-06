@@ -10,7 +10,6 @@ import {
     Animated
 } from 'react-native';
 
-// Renaming the file to reflect its universal nature
 
 type SelectOption = {
     label: string;
@@ -26,20 +25,18 @@ type CustomSelectProps = {
 };
 
 const CustomSelect = ({
-                          value,
-                          onChange,
-                          options,
-                          placeholder = 'Select an option',
-                          title = 'Select an option'
-                      }: CustomSelectProps) => {
+    value,
+    onChange,
+    options,
+    placeholder = 'Select an option',
+    title = 'Select an option'
+}: CustomSelectProps) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [slideAnim] = useState(new Animated.Value(0));
 
     useEffect(() => {
         if (modalVisible) {
-            // Reset position before animation starts
             slideAnim.setValue(0);
-            // Animate sliding up
             Animated.timing(slideAnim, {
                 toValue: 1,
                 duration: 300,
@@ -48,10 +45,9 @@ const CustomSelect = ({
         }
     }, [modalVisible]);
 
-    // Calculate translateY interpolation
     const translateY = slideAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [300, 0], // Start from 300px below, move to final position
+        outputRange: [300, 0],
     });
 
     const selectedOption = options.find(option => option.value === value);

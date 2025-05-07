@@ -19,9 +19,9 @@ type Props = {
 export const CarSelector = ({ availableCars, selectedCar, setSelectedCar }: Props) => {
     return (
         <View style={styles.vehicleContainer}>
-            {availableCars.map((car) => (
+            {availableCars.map((car, index) => (
                 <TouchableOpacity
-                    key={car.id}
+                    key={index}
                     style={[styles.carOption, selectedCar?.carName === car.carName && styles.selected]}
                     onPress={() => setSelectedCar({
                         carBrand: car.carBrand,

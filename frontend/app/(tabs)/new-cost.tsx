@@ -12,6 +12,7 @@ import {DataFormatter} from "@/helpers/data-formatter";
 import CustomSelect from "@/components/customSelect";
 import {CarSelector} from "@/components/car-selector";
 import { SERVER_URL } from '../../constants/Config';
+import { useHistoryStore } from "@/context/history";
 
 export default function NewCost() {
     const [activeView, setActiveView] = useState("Refuel");
@@ -30,6 +31,7 @@ export default function NewCost() {
     } | undefined>(undefined)
     const [partName, setPartName] = useState<string | undefined>(undefined)
     const [details, setDetails] = useState<string | undefined>(undefined)
+    const triggerRefetch = useHistoryStore((state) => state.triggerRefetch)
 
     const mainColor = '#1E88E5'
     const trackColor = '#BBDEFB'
@@ -70,6 +72,7 @@ export default function NewCost() {
 
     const handleNewCost = async () => {
         let data = {}
+        triggerRefetch()
 
         if (activeView === "Refuel") {
             if (!mileage || !fuelAmount || !price || !totalCost || !selectedCar) {

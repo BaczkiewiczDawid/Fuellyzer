@@ -105,7 +105,7 @@ export default function FuelingLog() {
                 const fuelConsumption = Number((litersFueled / mileageOnRefuel * 100).toFixed(2));
 
                 return (
-                    <View style={styles.historyItemWrapper}>
+                    <View style={styles.historyItemWrapper} key={index}>
                         <View style={styles.mainInfoWrapper}>
                             <View>
                                 <Text style={styles.bold}>{car.createdAt.split("T")[0]}</Text>

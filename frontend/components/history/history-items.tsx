@@ -15,6 +15,7 @@ type Props = {
 export const HistoryItems = ({ activeView }: Props) => {
     const [data, setData] = useState<HistoryItemType[] | undefined>(undefined)
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const refetchCounter = useHistoryStore((state) => state.refetchCounter)
     const triggerRefetch = useHistoryStore((state) => state.triggerRefetch)
 
     const fetchData = useCallback(async () => {
@@ -27,11 +28,11 @@ export const HistoryItems = ({ activeView }: Props) => {
         } finally {
             setIsLoading(false)
         }
-    }, [])
+    }, [refetchCounter])
 
     useEffect(() => {
         fetchData()
-    }, [fetchData])
+    }, [fetchData, refetchCounter])
 
     const handleDelete = async (item: HistoryItemType) => {
         setData(prevData => prevData?.filter(i => i.id !== item.id))

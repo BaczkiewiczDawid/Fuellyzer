@@ -109,9 +109,7 @@ export const Summary = ({ type }: Props) => {
     }, [calculateData]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            console.log("Summary: Fetching data, refetchCounter:", refetchCounter);
-            
+        const fetchData = async () => {            
             try {
                 const historyResponse = await useApi(`${SERVER_URL}/history`, "GET");
                 const carDetailsResponse = await useApi(`${SERVER_URL}/user-cars-list`, "GET");

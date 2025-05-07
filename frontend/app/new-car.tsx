@@ -7,6 +7,7 @@ import FormInput from "@/components/form-input";
 import {useApi} from "@/hooks/useApi";
 import {router} from "expo-router";
 import CustomSelect from "@/components/customSelect";
+import { SERVER_URL } from '../constants/Config';
 
 const carBrands = [
     {label: "Audi", value: "Audi"},
@@ -58,7 +59,7 @@ export default function NewCar() {
             setError(false);
         }
 
-        const response = await useApi("http://localhost:4000/new-car", "POST", {
+        const response = await useApi(`${SERVER_URL}/new-car`, "POST", {
             email: "baczkiewicz.dawid22@gmail.com",
             carBrand: selectedBrand,
             carName: selectedModel,

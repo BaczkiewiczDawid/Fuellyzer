@@ -11,6 +11,7 @@ import {router} from "expo-router";
 import {DataFormatter} from "@/helpers/data-formatter";
 import CustomSelect from "@/components/customSelect";
 import {CarSelector} from "@/components/car-selector";
+import { SERVER_URL } from '../../constants/Config';
 
 export default function NewCost() {
     const [activeView, setActiveView] = useState("Refuel");
@@ -42,7 +43,7 @@ export default function NewCost() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+            const response = await useApi(`${SERVER_URL}/user-cars-list`, "GET")
 
             setAvailableCars(response.map((car: Car) => ({
                 carBrand: car.carBrand,
@@ -110,7 +111,7 @@ export default function NewCost() {
             }
         }
 
-        const response = await useApi("http://localhost:4000/new-expense", "POST", data)
+        const response = await useApi(`${SERVER_URL}/new-expense`, "POST", data)
 
         if (response) {
             setMileage(undefined)

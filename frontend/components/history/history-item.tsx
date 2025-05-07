@@ -1,8 +1,8 @@
-import {Image, Pressable, StyleSheet, Text, View} from "react-native";
-import {HistoryItemType} from "@/types/history-item";
-import {DataFormatter} from "@/helpers/data-formatter";
-import {Swipeable} from 'react-native-gesture-handler';
-import {useState} from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { HistoryItemType } from "@/types/history-item";
+import { DataFormatter } from "@/helpers/data-formatter";
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import { useState } from "react";
 import FormInput from "@/components/form-input";
 import CustomSelect from "@/components/customSelect";
 import CheckIcon from "@/assets/images/check.png"
@@ -13,9 +13,9 @@ type Props = {
     onEdit: (item: HistoryItemType) => void;
 }
 
-export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
+export const HistoryItem = ({ item, onDelete, onEdit }: Props) => {
     const day = String(new Date(item.date).getDate()).padStart(2, '0');
-    const month = new Date(item.date).toLocaleString('en-US', {month: 'short'});
+    const month = new Date(item.date).toLocaleString('en-US', { month: 'short' });
     const [isOpen, setIsOpen] = useState(false);
     const [totalValue, setTotalValue] = useState(item.total);
     const [typeValue, setTypeValue] = useState(item.type);
@@ -29,18 +29,18 @@ export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
             <View style={styles.editContainer}>
                 <View style={styles.inputsWrapper}>
                     <CustomSelect onChange={setTypeValue} value={typeValue} options={[
-                        {label: "Refuel", value: "Refuel"},
-                        {label: "Maintenance", value: "Maintenance"},
-                        {label: "Tuning", value: "Tuning"},
-                    ]}/>
+                        { label: "Refuel", value: "Refuel" },
+                        { label: "Maintenance", value: "Maintenance" },
+                        { label: "Tuning", value: "Tuning" },
+                    ]} />
                     <FormInput title={"Price"} placeholder={String(item.total)} type={"number"} value={totalValue}
-                               setValue={setTotalValue} error={false} badge={"$"} hideLabel style={styles.editInput}/>
+                        setValue={setTotalValue} error={false} badge={"$"} hideLabel style={styles.editInput} />
                 </View>
                 <Pressable onPress={() => {
                     setIsOpen(false);
-                    item = {...item, total: totalValue, type: typeValue}
+                    item = { ...item, total: totalValue, type: typeValue }
                     onEdit(item)
-                }}><Image style={styles.icon} source={CheckIcon}/></Pressable>
+                }}><Image style={styles.icon} source={CheckIcon} /></Pressable>
             </View>
         )
     }
@@ -65,21 +65,23 @@ export const HistoryItem = ({item, onDelete, onEdit}: Props) => {
     };
 
     return (
-        <Swipeable renderRightActions={renderRightActions}>
-            <View style={styles.itemContainer}>
-                <View style={styles.details}>
-                    <View style={styles.date}>
-                        <Text style={styles.datePrimary}>{day}</Text>
-                        <Text style={styles.dateSecondary}>{month}</Text>
+        <GestureHandlerRootView>
+            <Swipeable renderRightActions={renderRightActions}>
+                <View style={styles.itemContainer}>
+                    <View style={styles.details}>
+                        <View style={styles.date}>
+                            <Text style={styles.datePrimary}>{day}</Text>
+                            <Text style={styles.dateSecondary}>{month}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.detailsText}>{item.type}</Text>
+                            <Text style={styles.detailsTextSecondary}>{item.details}</Text>
+                        </View>
                     </View>
-                    <View>
-                        <Text style={styles.detailsText}>{item.type}</Text>
-                        <Text style={styles.detailsTextSecondary}>{item.details}</Text>
-                    </View>
+                    <Text style={styles.total}>{DataFormatter(Number(item.total), "moneyRounded")}</Text>
                 </View>
-                <Text style={styles.total}>{DataFormatter(Number(item.total), "moneyRounded")}</Text>
-            </View>
-        </Swipeable>
+            </Swipeable>
+        </GestureHandlerRootView>
     );
 }
 

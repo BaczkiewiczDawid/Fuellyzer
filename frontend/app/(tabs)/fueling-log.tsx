@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {Car} from "@/types/car";
 import {DataFormatter} from "@/helpers/data-formatter";
 import {CarSelector} from "@/components/car-selector";
+import { SERVER_URL } from '../../constants/Config';
 
 type CostsHistory = {
     createdAt: string;
@@ -35,7 +36,7 @@ export default function FuelingLog() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await useApi("http://localhost:4000/history", "GET");
+                const response = await useApi(`${SERVER_URL}/history`, "GET");
                 const data = await response;
                 setCarsDataHistory(data);
             } catch (error) {
@@ -48,7 +49,7 @@ export default function FuelingLog() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+            const response = await useApi(`${SERVER_URL}/user-cars-list`, "GET")
 
             setAvailableCars(response.map((car: Car) => ({
                 carBrand: car.carBrand,

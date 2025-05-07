@@ -6,6 +6,7 @@ import {useEffect} from "react";
 import {useApi} from "@/hooks/useApi";
 import {Skeleton} from "@/components/skeleton";
 import {DataFormatter} from "@/helpers/data-formatter";
+import { SERVER_URL } from '../../constants/Config';
 
 export const SelectedCar = () => {
     const carBrand = useUserStore(state => state.carBrand);
@@ -19,7 +20,7 @@ export const SelectedCar = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApi("http://localhost:4000/user-cars-list", "GET")
+            const response = await useApi(`${SERVER_URL}/user-cars-list`, "GET")
 
             if (response) {
                 setCarBrand(response[0].carBrand)

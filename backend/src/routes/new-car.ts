@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
             mileageMeasure: "kilometers",
             oilChange: data.oilChange,
             insurance: data.insurance,
+            lastOilChange: data.lastOilChange
         });
 
         res.send(response);

@@ -127,9 +127,9 @@ export const Summary = ({ type }: Props) => {
                     );
                     setInsuranceDate(carDetails.insurance);
 
-                    console.log(carDetails)
+                    const oilChangeMileage = carDetails.mileage - carDetails.lastOilChange
 
-                    setOilChange(carDetails.mileage - carDetails.oilChange);
+                    setOilChange(carDetails.oilChange - oilChangeMileage);
                 }
             } catch (error) {
                 console.error("Error fetching summary data:", error);

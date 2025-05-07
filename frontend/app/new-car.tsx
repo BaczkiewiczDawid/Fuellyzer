@@ -70,6 +70,7 @@ export default function NewCar() {
             mileage,
             insurance,
             oilChange: 10000,
+            lastOilChange: mileage,
         })
 
         if (response) {

@@ -6,6 +6,7 @@ import { useState } from "react";
 import FormInput from "@/components/form-input";
 import CustomSelect from "@/components/customSelect";
 import CheckIcon from "@/assets/images/check.png"
+import { useHistoryStore } from "@/context/history";
 
 type Props = {
     item: HistoryItemType
@@ -19,6 +20,7 @@ export const HistoryItem = ({ item, onDelete, onEdit }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [totalValue, setTotalValue] = useState(item.total);
     const [typeValue, setTypeValue] = useState(item.type);
+    const triggerRefetch = useHistoryStore((state) => state.triggerRefetch)
 
     const handleDelete = () => {
         onDelete(item)
@@ -38,8 +40,9 @@ export const HistoryItem = ({ item, onDelete, onEdit }: Props) => {
                 </View>
                 <Pressable onPress={() => {
                     setIsOpen(false);
-                    item = { ...item, total: totalValue, type: typeValue }
-                    onEdit(item)
+                    const updatedItem = { ...item, total: totalValue, type: typeValue }
+                    onEdit(updatedItem)
+                    triggerRefetch()
                 }}><Image style={styles.icon} source={CheckIcon} /></Pressable>
             </View>
         )

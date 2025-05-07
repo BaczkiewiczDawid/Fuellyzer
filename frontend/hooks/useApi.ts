@@ -13,6 +13,7 @@ export const useApi = async (url: string, method: "POST" | "GET" | "DELETE" | "P
             },
             body: JSON.stringify(options),
         });
+
         return await response.json();
     } catch (err) {
         throw new Error(err as string)

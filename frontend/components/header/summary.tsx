@@ -109,24 +109,27 @@ export const Summary = ({ type }: Props) => {
     }, [calculateData]);
 
     useEffect(() => {
-        const fetchData = async () => {            
+        const fetchData = async () => {
             try {
                 const historyResponse = await useApi(`${SERVER_URL}/history`, "GET");
                 const carDetailsResponse = await useApi(`${SERVER_URL}/user-cars-list`, "GET");
 
                 if (carBrand && carName) {
-                    const filteredData = await historyResponse.filter((item: Car) => 
+                    const filteredData = await historyResponse.filter((item: Car) =>
                         item.carBrand === carBrand && item.carName === carName
                     );
                     setHistoryData(filteredData);
                 }
 
                 if (carBrand && carName) {
-                    const carDetails = await carDetailsResponse.find((item: Car) => 
+                    const carDetails = await carDetailsResponse.find((item: Car) =>
                         item.carBrand === carBrand && item.carName === carName
                     );
                     setInsuranceDate(carDetails.insurance);
-                    setOilChange(carDetailsResponse.mileage - carDetails.oilChange);
+
+                    console.log(carDetails)
+
+                    setOilChange(carDetails.mileage - carDetails.oilChange);
                 }
             } catch (error) {
                 console.error("Error fetching summary data:", error);

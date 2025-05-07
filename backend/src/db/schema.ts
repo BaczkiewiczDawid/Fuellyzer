@@ -27,4 +27,5 @@ export const userCarsList = pgTable("userCarsList", {
     mileageMeasure: text("mileageMeasure").notNull(),
     oilChange: integer("oilChange").notNull(),
     insurance: date("insurance").notNull(),
+    lastOilChange: integer("lastOilChange").notNull()
 })

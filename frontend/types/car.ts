@@ -9,4 +9,5 @@ export type Car = {
     mileageMeasure: string
     oilChange: number
     insurance: string
+    lastOilChange: number
 }

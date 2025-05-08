@@ -1,10 +1,10 @@
 type Props = {
     url: string,
     method: "POST" | "GET" | "DELETE" | "PATCH" | "PUT",
-    options?: { [key: string]: any }[]
+    options?: { [key: string]: any }
 }
 
-export const useApi = async (url: string, method: "POST" | "GET" | "DELETE" | "PATCH" | "PUT", options?: { [key: string]: any }) => {
+export const useApi = async <T>(url: string, method: "POST" | "GET" | "DELETE" | "PATCH" | "PUT", options?: { [key: string]: any }): Promise<T> => {
     try {
         const response = await fetch(url, {
             method,

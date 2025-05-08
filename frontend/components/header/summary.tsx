@@ -5,6 +5,7 @@ import { DataFormatter } from "@/helpers/data-formatter";
 import { useEffect, useState, useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
 import { Car } from "@/types/car";
+import { HistoryItemType } from "@/types/history-item";
 import { useUserStore } from "@/context/user";
 import { SERVER_URL } from '../../constants/Config';
 import { useHistoryStore } from "@/context/history";
@@ -14,7 +15,7 @@ type Props = {
 }
 
 export const Summary = ({ type }: Props) => {
-    const [historyData, setHistoryData] = useState([])
+    const [historyData, setHistoryData] = useState<HistoryItemType[]>([])
     const carBrand = useUserStore((state) => state.carBrand)
     const carName = useUserStore((state) => state.carName)
     const [currentData, setCurrentData] = useState<number>(0)
@@ -25,7 +26,7 @@ export const Summary = ({ type }: Props) => {
     const [oilChange, setOilChange] = useState<number>(0)
     const refetchCounter = useHistoryStore((state) => state.refetchCounter)
 
-    const summarizeData = (data: any[]) => {
+    const summarizeData = (data: HistoryItemType[]) => {
         return data.reduce((sum, item) => sum + (item.total || 0), 0)
     };
 
@@ -47,11 +48,9 @@ export const Summary = ({ type }: Props) => {
     };
 
     const calculateData = useCallback(() => {
-        let result;
-
         switch (type) {
             case "monthly": {
-                const currentMonthData = historyData.filter((item: any) => {
+                const currentMonthData = historyData.filter((item) => {
                     const dateParts = item.date.split("-");
                     const itemYear = parseInt(dateParts[0]);
                     const itemMonth = parseInt(dateParts[1]);
@@ -59,7 +58,7 @@ export const Summary = ({ type }: Props) => {
                 });
 
                 const prevMonth = getPreviousMonth(currentYear, currentMonth);
-                const prevMonthData = historyData.filter((item: any) => {
+                const prevMonthData = historyData.filter((item) => {
                     const dateParts = item.date.split("-");
                     const itemYear = parseInt(dateParts[0]);
                     const itemMonth = parseInt(dateParts[1]);
@@ -76,14 +75,14 @@ export const Summary = ({ type }: Props) => {
                 break;
             }
             case "yearly": {
-                const currentYearData = historyData.filter((item: any) => {
+                const currentYearData = historyData.filter((item) => {
                     const dateParts = item.date.split("-");
                     const itemYear = parseInt(dateParts[0]);
                     return itemYear === currentYear;
                 });
 
                 const prevYear = getPreviousYear(currentYear);
-                const prevYearData = historyData.filter((item: any) => {
+                const prevYearData = historyData.filter((item) => {
                     const dateParts = item.date.split("-");
                     const itemYear = parseInt(dateParts[0]);
                     return itemYear === prevYear;
@@ -111,25 +110,26 @@ export const Summary = ({ type }: Props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const historyResponse = await useApi(`${SERVER_URL}/history`, "GET");
-                const carDetailsResponse = await useApi(`${SERVER_URL}/user-cars-list`, "GET");
+                const historyResponse = await useApi<HistoryItemType[]>(`${SERVER_URL}/history`, "GET");
+                const carDetailsResponse = await useApi<Car[]>(`${SERVER_URL}/user-cars-list`, "GET");
 
                 if (carBrand && carName) {
-                    const filteredData = await historyResponse.filter((item: Car) =>
+                    const filteredData = historyResponse.filter((item) =>
                         item.carBrand === carBrand && item.carName === carName
                     );
                     setHistoryData(filteredData);
                 }
 
                 if (carBrand && carName) {
-                    const carDetails = await carDetailsResponse.find((item: Car) =>
+                    const carDetails = carDetailsResponse.find((item) =>
                         item.carBrand === carBrand && item.carName === carName
                     );
-                    setInsuranceDate(carDetails.insurance);
-
-                    const oilChangeMileage = carDetails.mileage - carDetails.lastOilChange
-
-                    setOilChange(carDetails.oilChange - oilChangeMileage);
+                    
+                    if (carDetails) {
+                        setInsuranceDate(carDetails.insurance);
+                        const oilChangeMileage = carDetails.mileage - carDetails.lastOilChange;
+                        setOilChange(carDetails.oilChange - oilChangeMileage);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching summary data:", error);

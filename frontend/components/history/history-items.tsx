@@ -22,19 +22,23 @@ export const HistoryItems = ({ activeView }: Props) => {
         setIsLoading(true)
         try {
             const response = await useApi(`${SERVER_URL}/history`, "GET");
-            setData(response)
+            if (response) {
+                setData(response)
+            }
         } catch (error) {
             console.error("Error fetching history data:", error)
+            // Keep the previous data on error
         } finally {
             setIsLoading(false)
         }
-    }, [refetchCounter])
+    }, []) // Remove refetchCounter from dependencies to prevent double fetching
 
     useEffect(() => {
         fetchData()
     }, [fetchData, refetchCounter])
 
     const handleDelete = async (item: HistoryItemType) => {
+        const previousData = data; // Store previous state for rollback
         setData(prevData => prevData?.filter(i => i.id !== item.id))
         triggerRefetch()
 
@@ -42,11 +46,12 @@ export const HistoryItems = ({ activeView }: Props) => {
             await useApi(`${SERVER_URL}/history`, "DELETE", item)
         } catch (error) {
             console.error("Error deleting item:", error)
-            fetchData()
+            setData(previousData) // Rollback on error
         }
     }
 
     const handleEdit = async (item: HistoryItemType) => {
+        const previousData = data; // Store previous state for rollback
         setData(prevData => prevData?.map(i => i.id === item.id ? item : i))
         triggerRefetch()
 
@@ -54,16 +59,16 @@ export const HistoryItems = ({ activeView }: Props) => {
             await useApi(`${SERVER_URL}/history`, "PUT", item)
         } catch (error) {
             console.error("Error editing item:", error)
-            fetchData()
+            setData(previousData) // Rollback on error
         }
     }
 
-    if (isLoading) {
+    if (isLoading && !data) {
         return <Loader />
     }
 
     if (!data) {
-        return <Loader />
+        return <NoData />
     }
 
     const filteredHistoryItemsList: HistoryItemType[] = data.filter(item => item.type === activeView);
@@ -73,7 +78,7 @@ export const HistoryItems = ({ activeView }: Props) => {
             {(activeView === "All" ? data : filteredHistoryItemsList).length === 0 && <NoData />}
             {(activeView === "All" ? data : filteredHistoryItemsList).map((item, index) => {
                 return (
-                    <HistoryItem key={index} item={item} onDelete={handleDelete} onEdit={handleEdit} />
+                    <HistoryItem key={item.id || index} item={item} onDelete={handleDelete} onEdit={handleEdit} />
                 )
             })}
         </View>

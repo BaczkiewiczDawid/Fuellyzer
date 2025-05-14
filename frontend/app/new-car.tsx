@@ -56,7 +56,7 @@ export default function NewCar() {
     const handleAddNewCar = async () => {
         triggerRefetch()
 
-        if (insurance && !insurance.match(/(\d{2})-(\d{2})-(\d{4})/)) {
+        if (insurance === undefined || (insurance && !insurance.match(/(\d{2})-(\d{2})-(\d{4})/))) {
             setError(true);
             return
         } else {

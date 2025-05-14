@@ -66,7 +66,7 @@ export const FormInput = ({
                     placeholder={placeholder}
                     style={[styles.input, style]}
                     keyboardType={keyboardType}
-                    value={value?.toString()}
+                    value={value === undefined ? '' : value.toString()}
                     secureTextEntry={type === 'password'}
                     onChangeText={(text) => setValue(text)}
                     placeholderTextColor="#9ca3af"

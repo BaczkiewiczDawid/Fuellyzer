@@ -44,8 +44,6 @@ export default function GoogleLogin() {
       />
       {userInfo && (
         <View style={{ marginTop: 20 }}>
-          {/* <Text>Witaj {userInfo.name}</Text>
-          <Text>Email: {userInfo.email}</Text> */}
           <Text>Bruh</Text>
         </View>
       )}

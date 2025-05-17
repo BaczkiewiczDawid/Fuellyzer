@@ -7,11 +7,13 @@ export default {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "myapp",
+    scheme: "fuellyzer",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    owner: "dawson22",
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
+      bundleIdentifier: "com.dawson22.Fuellyzer"
     },
     android: {
       adaptiveIcon: {
@@ -47,7 +49,9 @@ export default {
       eas: {
         projectId: "74a78766-0e65-49b3-b043-e07026f654bc"
       },
-      SERVER_URL: process.env.SERVER_URL
+      SERVER_URL: process.env.SERVER_URL,
+      googleClientId: process.env.GOOGLE_CLIENT_ID,
+      googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }
   }
 }; 

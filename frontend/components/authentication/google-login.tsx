@@ -10,16 +10,15 @@ WebBrowser.maybeCompleteAuthSession()
 export default function GoogleLogin() {
   const [userInfo, setUserInfo] = useState(null)
 
-  const redirectUri = AuthSession.makeRedirectUri()
-
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID!,
+    clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
     scopes: ['profile', 'email'],
     redirectUri: AuthSession.makeRedirectUri({
-      scheme: 'fuellyzer'
-    })
+      scheme: 'fuellyzer',
+      path: 'oauth2redirect/google'
+    }),
   })
-  
+
   useEffect(() => {
     if (response?.type === 'success') {
       const { authentication } = response
@@ -40,15 +39,16 @@ export default function GoogleLogin() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button
-        title="Zaloguj się przez Google"
+        title="Sign in with Google"
         disabled={!request}
         onPress={() => promptAsync()}
       />
       {userInfo && (
         <View style={{ marginTop: 20 }}>
-          <Text>Bruh</Text>
+          {/* <Text>Welcome {userInfo.name}</Text>
+          <Text>Email: {userInfo.email}</Text> */}
         </View>
       )}
     </View>
   )
-}
+} 
